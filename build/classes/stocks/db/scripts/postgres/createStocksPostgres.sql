@@ -1,7 +1,7 @@
-﻿-- ==================== SCRIPT DE DELECAO DE TABELAS ====================
+-- ==================== SCRIPT DE DELECAO DE TABELAS ====================
 DROP TABLE isins_inexistentes;
 DROP TABLE cotacoes;
-DROP TABLE links_noticias_empresa;
+DROP TABLE links_noticias_empresas;
 DROP TABLE contato_investidores;
 DROP TABLE empresas_isin;
 DROP TABLE empresas;
@@ -53,32 +53,31 @@ CREATE TABLE empresas (
 CREATE TABLE empresas_isin (
     cnpj                  CHAR(14) NOT NULL,
     cod_isin              CHAR(12) NOT NULL,
-    PRIMARY KEY           (cod_isin),
-    FOREIGN KEY           (cnpj) REFERENCES empresas (cnpj)
+    PRIMARY KEY           (cod_isin)
 );
 
 -- =========== TABELA com os CONTATOs das EMPRESAs =========== 
 CREATE SEQUENCE id_contato;
 CREATE TABLE contato_investidores (
-    id_contato INTEGER NOT NULL default nextval('id_contato'),
     nome_contato          VARCHAR(100) NOT NULL,
     twitter_contato       VARCHAR(200),
     facebook_contato      VARCHAR(200), 
     cnpj                  CHAR(14) NOT NULL,
+    id_contato INTEGER NOT NULL default nextval('id_contato'),
     PRIMARY KEY           (id_contato),
     FOREIGN KEY           (cnpj) REFERENCES empresas (cnpj)
 );
 
 -- =========== TABELA com os LINKS das NOTICIAS das EMPRESAs =========== 
 CREATE SEQUENCE id_link;
-CREATE TABLE links_noticias_empresa (
-    id_link INTEGER NOT NULL default nextval('id_link'),
+CREATE TABLE links_noticias_empresas (
     fonte                 VARCHAR(100),
     sub_fonte             VARCHAR(100),
     cnpj                  CHAR(14) NOT NULL,
     data_noticia          TIMESTAMP,
     titulo                VARCHAR(500),
     link                  VARCHAR(500),
+    id_link INTEGER NOT NULL default nextval('id_link'),
     PRIMARY KEY           (id_link),
     FOREIGN KEY           (cnpj) REFERENCES empresas (cnpj)
 );
@@ -114,7 +113,7 @@ CREATE TABLE cotacoes (
     preco_melhor_compra   NUMERIC(11, 2), 
     preco_melhor_venda    NUMERIC(11, 2), 
     total_negocios        INTEGER,
-    qtd_titulos           INTEGER,
+    qtd_titulos           BIGINT,
     volume_titulos        NUMERIC(16, 2), 
     preco_exercicio       NUMERIC(11, 2), 
     ind_mercado_opcoes    INTEGER, 
@@ -124,9 +123,7 @@ CREATE TABLE cotacoes (
     cod_isin              CHAR(12),
     num_distribuicao      CHAR(3),
     id_cotacao INTEGER NOT NULL default nextval('id_cotacao'),
-
-    PRIMARY KEY           (id_cotacao),
-    FOREIGN KEY           (cod_isin) REFERENCES empresas_isin (cod_isin)
+    PRIMARY KEY           (id_cotacao)
 );
 
 -- =========== TABELAS TEMPORARIA com ISINs INEXISTENTES =========== 
