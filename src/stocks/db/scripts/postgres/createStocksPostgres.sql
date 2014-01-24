@@ -53,7 +53,9 @@ CREATE TABLE empresas (
 CREATE TABLE empresas_isin (
     cnpj                  CHAR(14) NOT NULL,
     cod_isin              CHAR(12) NOT NULL,
-    PRIMARY KEY           (cod_isin)
+    PRIMARY KEY           (cod_isin),
+    FOREIGN KEY           (cnpj) REFERENCES empresas (cnpj)
+
 );
 
 -- =========== TABELA com os CONTATOs das EMPRESAs =========== 
