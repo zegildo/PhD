@@ -63,6 +63,7 @@ SelectBigCotacoes <- function(num.cotacoes, pk.cols){
 	isin.2013 <- unique(ts.data[year(ts.data$dataPregao) == 2013, "codisi"])
   
   cat("Count the quantity of cotacoes per selected ISIN with BDI: 02 or 96...\n")
+  #aplica a função para cada parte do conjunto sem janela deslizante como no rollaplly
 	cotacao.size <- ddply(subset(ts.data, (codbdi == "02" | codbdi == "96") & codisi %in% isin.2013, 
                                c(pk.cols, "nomres")), 
                         #group the extracted subset by codbdi and isin

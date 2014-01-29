@@ -1,4 +1,4 @@
-package stocks.crawlers.data.collectors.news;
+package stocks.data.collectors.news;
 
 import java.io.File;
 
