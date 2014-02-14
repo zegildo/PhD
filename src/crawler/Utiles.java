@@ -13,30 +13,24 @@ public class Utiles {
 
 	public final static long ZERO = 0;
 
-
-
-	public static String formatoYYYYMMddHHmm(String data, boolean finalDoDia){
+	public static String formatoYYYYMMddHHmm(String data, String horaMinuto){
 		String diaMesAno [] = data.split("/");
 		String dia = diaMesAno[0];
 		String mes = diaMesAno[1];
 		String ano = diaMesAno[2];
-
-		if(finalDoDia){
-			data = ano+mes+dia+"2359";
-		}else{
-			data = ano+mes+dia+"0000";
-		}
+		
+		data = ano+mes+dia+horaMinuto;
 
 		return data;
 
 	}
-
-	public static long dataToTimestamp(String data, boolean finalDoDia) throws DataToTimesTamp{
+	
+	public static long dataToTimestamp(String data, String horaMinuto){
 
 		long unixtime = ZERO;
 
 		if(!data.isEmpty()){
-			data = formatoYYYYMMddHHmm(data,finalDoDia);
+			data = formatoYYYYMMddHHmm(data,horaMinuto);
 			DateFormat dfm = new SimpleDateFormat("yyyyMMddHHmm");  
 
 			dfm.setTimeZone(TimeZone.getTimeZone("GMT"));//Specify your timezone 
@@ -44,7 +38,7 @@ public class Utiles {
 			try {
 				unixtime = dfm.parse(data).getTime();
 			} catch (ParseException e) {
-				throw new DataToTimesTamp("Impossivel converter a data: "+data+"para o formato timestamp");
+				System.out.println("Impossivel converter a data: "+data+"para o formato timestamp");
 			}  
 			unixtime=unixtime/1000;
 		}

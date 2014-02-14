@@ -18,7 +18,6 @@ import org.jsoup.select.Elements;
 import com.google.gson.Gson;
 
 import crawler.Crawlable;
-import crawler.DataToTimesTamp;
 import crawler.Informacao;
 import crawler.Utiles;
 import crawler.twitter.Tweet;
@@ -32,15 +31,13 @@ public class TwitterSearch implements Crawlable {
 
 		long unixTimesTampDataInicial = 0; 
 		long unixTimesTampDataFinal = 0;
-		
-		try{
-			unixTimesTampDataInicial = Utiles.dataToTimestamp(dataInicial, false);
-			unixTimesTampDataFinal = Utiles.dataToTimestamp(dataFinal, true);
-		}catch(DataToTimesTamp e){
-			System.out.println(e.getMessage());
-		}
-		
-	
+
+
+		unixTimesTampDataInicial = Utiles.dataToTimestamp(dataInicial, "0000");
+		unixTimesTampDataFinal = Utiles.dataToTimestamp(dataFinal, "2359");
+
+
+
 		consulta = Utiles.encondeConsulta(consulta);
 		Document paginaInicial = obtemPaginaInicial(consulta);
 		String dataScrollCursor = obtemdataScrollCursor(paginaInicial);
@@ -68,47 +65,47 @@ public class TwitterSearch implements Crawlable {
 		return tweets;
 
 	}
-	
+
 
 	private BufferedReader obtemPaginasConsecutivas(String consulta, String dataScrollCursor){
-		
+
 		URL tweetPage = null;
 		try {
 			tweetPage = new URL("https://twitter.com/i/search/timeline?q="+consulta+"&src=typd&f=realtime&include_available_features=1&include_entities=1&scroll_cursor="+dataScrollCursor);
 		} catch (MalformedURLException e) {
 			System.out.println(e.getMessage());
 		}
-		
+
 		BufferedReader in = null;
-		
+
 		try {
 			in = new BufferedReader(
 					new InputStreamReader(tweetPage.openStream()));
 		} catch (IOException e) {
 			System.out.println(e.getMessage());
 		}
-		
+
 		return in;
-		
+
 	}
-	
+
 	public Document obtemPaginaInicial(String consulta){
 
 		Connection.Response res;
 		Document paginaInicial = null;
-		
+
 		try {
 			res = Jsoup.connect("https://twitter.com/search?q="+consulta+"&src=typd&f=realtime")
 					.method(Method.GET)
 					.execute();
-			 paginaInicial = res.parse();
+			paginaInicial = res.parse();
 		} catch (IOException e) {
-			
+
 			System.out.println(e.getMessage());
 		}
-		
+
 		return paginaInicial;
-		
+
 	}
 
 	private String obtemdataScrollCursor(Document paginaInicial){
@@ -122,7 +119,7 @@ public class TwitterSearch implements Crawlable {
 
 		return paginaInicial.select(".content");
 	}
-	
+
 	public Informacao criaInformacao(Element element){
 		Element itemHeader = element.select(".stream-item-header").first();
 		Element itemTime = element.select(".time a").first();
@@ -196,7 +193,7 @@ public class TwitterSearch implements Crawlable {
 		String searchDateStart = "10/12/2013";
 		String searchDateFinish = "";
 		String consulta =  "petrobrás";
-		
+
 		TwitterSearch search = new TwitterSearch();
 
 		List<Informacao> tweets = search.getInformacao(searchDateStart,searchDateFinish, consulta);
