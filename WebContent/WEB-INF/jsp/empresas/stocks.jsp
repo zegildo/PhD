@@ -115,68 +115,7 @@
 
 				<!-- Tabela de Resultados-->
 				<div id="resultado" class="page-header">
-					<table class="table table-hover">
-						<!-- CabeÃ§alho da tabela -->
-						<thead>
-							<tr>
-								<th>#</th>
-								<th>Pregão</th>
-								<th>Name</th>
-								<th>Volume</th>
-								<th>Graph</th>
-								<th>Partial</th>
-							</tr>
-						</thead>
-						<!-- fim do cabeÃ§alho da tabela -->
-
-						<!-- linha1 completa-->
-						<tr>
-							<td>
-								<div class="input-group">
-									<input type="checkbox">
-								</div>
-								<!-- /input-group -->
-							</td>
-							<td><span class="label label-danger">ELET3</span></td>
-							<td>Petrobrás Distribution Co.</td>
-							<td>$9204</td>
-							<td>
-								<div id="dow">
-									<canvas
-										style="display: inline-block; width: 90px; height: 40px; vertical-align: top;"
-										width="90" height="40"></canvas>
-								</div>
-							</td>
-							<td><span class="text-danger">-4%</span></td>
-						</tr>
-						<!-- linha completa-->
-
-
-
-						<!-- linha2 completa-->
-						<tr>
-							<td>
-								<div class="input-group">
-									<input type="checkbox">
-								</div>
-								<!-- /input-group -->
-							</td>
-							<td><span class="label label-success">ELET3</span></td>
-
-							<td>National Distribution Co.</td>
-							<td>$9204</td>
-							<td>
-								<div id="nasdaq">
-									<canvas
-										style="display: inline-block; width: 90px; height: 13px; vertical-align: top;"
-										width="100" height="13"></canvas>
-								</div>
-							</td>
-							<td><span class="text-success">+5%</span></td>
-						</tr>
-						<!-- linha2 completa-->
-
-					</table>
+					
 				</div>
 				<!-- Tabela de Resultados-->
 

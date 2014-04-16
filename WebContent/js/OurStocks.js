@@ -235,39 +235,38 @@ function montaColuna(data){
 		var telefone = empresa.telefone;
 		var fax = empresa.fax;
 		
-		var resultado = 
-			"<div id='botoesMain' class='btn-group'>"+
-				"<button class='btn btn-primary' id='btnGrafico' type='button'>"+
-					"<span class='glyphicon glyphicon-check'></span>"+
-				"</button>"+
-				"<button class='btn btn-primary' id='btnInfo' type='button'>"+
-					"<span class='glyphicon glyphicon-home'></span>"+
-				"</button>"+
-				"<button class='btn btn-primary' id='btnSocialMedia' type='button'>"+
-					"<span class='glyphicon glyphicon-user'></span>"+
-				"</button>"+
-			"</div>"+
-			  "<h1 class='page-header'>"+nomeDaEmpresa+"</h1>"+
-				"<p class='lead'>"+atividadePrincipal+"</p>"+
-					"<div class='row placeholders'>"+
-						"<div class='col-xs-6 col-sm-3 placeholder'>"+
-							"<img class='img-circle' alt='100x100' src='"+$('#imgs').val()+'/'+cnpj+".jpg'/>"+
+		var teste1 = "danger";
+		var teste2 = "arrow-down";
+		
+		var dadosGerais = 
+			"<h1 class='page-header'>Dados Gerais</h1>"+
+			"<h2 class='page-header'>"+nomeDaEmpresa+
+				"<span class='label label-"+teste1+"'><span class='glyphicon glyphicon-'"+teste2+"'></span>"+
+				"</span>" +
+			"</h2>"+
+			"<p class='lead'>"+atividadePrincipal+"</p>"+
+			"<div class='row placeholders'>"+
+				"<div class='col-xs-6 col-sm-3 placeholder'>"+
+					"<img class='img-circle' alt='100x100' src='"+$('#imgs').val()+'/'+cnpj+".jpg'/>"+
+				"</div>"+
+			
+				"<div class='col-xs-6 col-sm-9 placeholder'>"+
+					"<div class='panel panel-primary'>"+
+	  					"<div class='panel-body'>"+
+							"<address>"+
+								  "<strong>"+nomePregao+"</strong><br>"+
+								  endereco+"<br>"+
+								  cidade+", "+estado+" "+cep+"<br>"+
+								  "<abbr title='Phone'>P:</abbr>"+telefone+"<br>"+
+								  "<abbr title='Fax'>F:</abbr>"+fax+
+							"</address>"+
 						"</div>"+
-						
-						"<div class='col-xs-6 col-sm-9 placeholder'>"+
-							"<div class='panel panel-primary'>"+
-			  					"<div class='panel-body'>"+
-									"<address>"+
-										  "<strong>"+nomePregao+"</strong><br>"+
-										  endereco+"<br>"+
-										  cidade+", "+estado+" "+cep+"<br>"+
-										  "<abbr title='Phone'>P:</abbr>"+telefone+"<br>"+
-										  "<abbr title='Fax'>F:</abbr>"+fax+
-									"</address>"+
-								"</div>"+
-			  		"</div>"+
-			  	"</div>"+
-		  	"</div>";
+					"</div>"+
+				"</div>"+
+			"</div>";
+		
+		var resultado = dadosGerais;
+			  
 
 			
 		$("#resultado").append(resultado);
@@ -290,6 +289,43 @@ function montaColuna(data){
 		
 
 		
+	}
+	
+	function geraTabela(codNegociacao,label, nomeDaEmpresa, volume, idGrafico, porcentagem){
+		//Cabecalho
+		 "<table class='table table-hover'>"+
+		"<thead>"+
+			"<tr>"+
+				"<th>#</th>"+
+				"<th>Pregão</th>"+
+				"<th>Name</th>"+
+				"<th>Volume</th>"+
+				"<th>Graph</th>"+
+				"<th>Partial</th>"+
+			"</tr>"+
+		"</thead>"+
+		
+
+		//linha completa
+		"<tr>"+
+			"<td>"+
+				"<div class='input-group'>"+
+					"<input type='checkbox'>"+
+				"</div>"+
+			"</td>"+
+			"<td><span class='label label-"+label+"'>"+codNegociacao+"</span></td>"+
+			"<td>"+nomeDaEmpresa+"</td>"+
+			"<td> R$"+volume+"</td>"+
+			"<td>"+
+				"<div id="+idGrafico+">"+
+					"<canvas"+
+						"style='display: inline-block; width: 90px; height: 40px; vertical-align: top;"+
+						"width='90' height='40'></canvas>"+
+				"</div>"+
+			"</td>"+
+			"<td><span class='text-"+label+"'>"+porcentagem+"%</span></td>"+
+		"</tr>"+
+	"</table>";
 	}
 	
 }
