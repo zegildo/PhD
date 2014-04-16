@@ -26,7 +26,9 @@ import java.util.zip.GZIPInputStream;
  * @author Joshua Shinavier (http://fortytwo.net)
  */
 public class WordnetLoader {
-	private static final String SOURCE = "src/sentiment/db/wordnet";
+	//Formato em Portugues...
+	//private static final String SOURCE = "src/sentiment/db/wordnet";
+	private static final String SOURCE = "/Users/zegildo/Desktop/WordNet-ttl-gz";
 	private static final String DEST = "//Users/zegildo/neo4j";
 	private static final long BUFFER_SIZE = 1000;
 
@@ -43,7 +45,7 @@ public class WordnetLoader {
 	private void load() throws Exception {
 		Neo4jGraph g = new Neo4jGraph(DEST);
 
-		@SuppressWarnings("unchecked")
+		/*@SuppressWarnings("unchecked")
 		Sail sail = new GraphSail(g);
 		sail.initialize();
 		try {
@@ -57,15 +59,16 @@ public class WordnetLoader {
 					System.out.println("loading file: " + f);
 					String n = f.getName();
 					InputStream is;
-					if (n.endsWith(".gz")) {
+					if (n.endsWith(".ttl.gz")) {
 						is = new GZIPInputStream(new FileInputStream(f));
 					} else if (n.endsWith(".ttl")) {
 						is = new FileInputStream(f);
 					} else {
 						continue;
 					}
-
-					RDFParser p = Rio.createParser(RDFFormat.NTRIPLES);
+					//Formato para o Wordnet-PT
+					//RDFParser p = Rio.createParser(RDFFormat.NTRIPLES);
+					RDFParser p = Rio.createParser(RDFFormat.TURTLE);
 					p.setStopAtFirstError(false);
 					p.setRDFHandler(new SailConnectionAdder(c));
 
@@ -90,7 +93,7 @@ public class WordnetLoader {
 			}
 		} finally {
 			sail.shutDown();
-		}
+		}*/
 	}
 
 	private class SailConnectionAdder implements RDFHandler {

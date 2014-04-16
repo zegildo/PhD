@@ -1,21 +1,11 @@
 package sentiment.db.test;
 
-import java.util.Iterator;
-
-import org.neo4j.cypher.javacompat.ExecutionEngine;
-import org.neo4j.cypher.javacompat.ExecutionResult;
-import org.neo4j.graphdb.GraphDatabaseService;
-import org.neo4j.graphdb.Node;
-import org.neo4j.graphdb.Relationship;
-import org.neo4j.graphdb.Transaction;
-import org.neo4j.graphdb.factory.GraphDatabaseFactory;
-
 
 public class Neo4j {
 
 	public static void main(String args[]){
 
-		GraphDatabaseService db = new GraphDatabaseFactory().newEmbeddedDatabase("/Users/zegildo/neo4j");
+		//GraphDatabaseService db = new GraphDatabaseFactory().newEmbeddedDatabase("/Users/zegildo/neo4j");
 
 		//		 Transaction tx = db.beginTx();
 		//		 
@@ -43,12 +33,12 @@ public class Neo4j {
 		//START n=node(301) MATCH n-->b RETURN n,b limit 500
 		//TART n=node(583676) MATCH n-[r]->b RETURN n,r,b
 		//457868,332739,263138,170650,411645
-		ExecutionEngine engine = new ExecutionEngine(db);
-		ExecutionResult result = engine.execute("START bom=node(332739) MATCH (bom)-[r]-(x) return bom,r,x limit 1000");
+		//ExecutionEngine engine = new ExecutionEngine(db);
+		//ExecutionResult result = engine.execute("START good=node(362860), bad=node(308082) MATCH p = shortestPath((good)-[*..15]-(bad)) RETURN p");
 
-		System.out.println(result.dumpToString());
+		//ØSystem.out.println(result.dumpToString());
 
-		db.shutdown();
+		//db.shutdown();
 
 
 

@@ -1,7 +1,6 @@
 package sentiment.db.test;
 
-import org.neo4j.graphdb.RelationshipType;
 
-public enum Relacionamento implements RelationshipType {
+public enum Relacionamento {
 E_UM;
 }

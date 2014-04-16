@@ -2,6 +2,7 @@ package crawler.noticias;
 
 import crawler.Informacao;
 
+
 public class Noticia extends Informacao {
 
 	private String noticiaNaIntegra;

@@ -30,7 +30,7 @@ public class NoticiasJornalTERRASearch implements Crawlable {
 		Map<String, String> aMap = new HashMap<String, String>();
 		aMap.put("Janeiro", "01");
 		aMap.put("Fevereiro", "02");
-		aMap.put("Maro", "03");
+		aMap.put("MarÃ§o", "03");
 		aMap.put("Abril", "04");
 		aMap.put("Maio", "05");
 		aMap.put("Junho", "06");
@@ -97,7 +97,7 @@ public class NoticiasJornalTERRASearch implements Crawlable {
 				for (Element dia : dias) {
 					long timesTampDia = timestampDoDia(dia);
 					/*Se a ultima noticia valor da lista(o mais antiga) ainda for menor
-					 * que o valor que busco, ent‹o toda a lista deve ser adicionada.
+					 * que o valor que busco, entï¿½o toda a lista deve ser adicionada.
 					 */
 					if(timesTampDia >= unixTimesTampDataInicial){
 						List<Informacao> noticiasDoDia = criaInformacao(dia);
