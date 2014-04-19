@@ -64,22 +64,6 @@ $(document).ready(function(){
 		});
 	});
 
-	$('#btnContainer').click(function() {
-		$(this).addClass('active');
-		$('#btnTimeline').removeClass('active');
-		$( "#timeline" ).fadeOut( "slow",  function complete(){
-			$( "#container" ).fadeIn( "slow" );
-		});
-
-	});
-
-	$('#btnTimeline').click(function() {
-		$(this).addClass('active');
-		$('#btnContainer').removeClass('active');
-		$( "#container" ).fadeOut( "slow",  function complete(){
-			$( "#timeline" ).fadeIn( "slow" );
-		});
-	});
 	var dow_prices = [16154.39
 	                  ,16130.40
 	                  ,16040.56
@@ -187,20 +171,152 @@ $(document).ready(function(){
 
 
 });
-$(function() {
 
+function montaTelefones(telefones){
+	
+	 var tels = telefones.split(","); 
+	 var resultado = "";
+	 
+	 for(var i = 0; i < tels.length; i++){
+		 
+		 resultado+="<small>"+tels[i]+"</small><br>";
+	 }
+	 return resultado; 
+}
+function informacoesPapeis(codigosNegociados){
+	var informacoesPapeis = "<div>"+
+								"<p class='lead'>Informacoes de Papeis</p>"+
+								"<table class='table table-condensed'>"+
+									"<tbody>"+
+										"<tr>"+
+											"<td><span class='label label-primary'>PAPEIS:</span></td>"+
+											"<td><span class='label label-danger'>"+codigosNegociados+"</span></td>"+
+										"</tr>"+
+									"</tbody>"+
+								"</table>"+
+							"</div>";
+	return informacoesPapeis;
+	
+}
+function informacoesGerais(cnpj,codigo_cvm, atividadePrincipal,setor,sub_setor, segmento){
+	
+	var informacoesGerais = "<div>"+
+								"<p class='lead'>Informacoes Gerais</p>"+
+									"<table class='table table-condensed'>"+
+										"<tbody>"+
+											"<tr>"+
+												"<td><span class='label label-primary'>CNPJ:</span></td>"+
+												"<td>"+cnpj+"</td>"+
+											"</tr>"+
+											"<tr>"+
+												"<td><span class='label label-primary'>CVM:</span></td>"+
+												"<td>"+codigo_cvm+"</td>"+
+											"</tr>"+
+											"<tr>"+
+												"<td><span class='label label-primary'>ATIVIDADE:</span></td>"+
+												"<td class='text-justify'><small>"+atividadePrincipal+"</small></td>"+
+											"</tr>"+
+											"<tr>"+
+												"<td><span class='label label-success'>SETOR:</span></td>"+
+												"<td>"+setor+"</td>"+
+											"</tr>"+
+											"<tr>"+
+												"<td><span class='label label-info'>SUB-SETOR:</span></td>"+
+												"<td>"+sub_setor+"</td>"+
+											"</tr>"+
+											"<tr>"+
+												"<td><span class='label label-warning'>SEGMENTO:</span></td>"+
+												"<td>"+segmento+"</td>"+
+											"</tr>"+
+										"</tbody>"+
+									"</table>"+
+								"</div>";
+	return informacoesGerais;
+}
+
+function informacoesDeEndereco(endereco, cidade, estado, cep, telefones, fax){
+	
+	var informacoesEndereco = "<div>"+
+								"<p class='lead'>Endereço</p>"+
+									"<table class='table table-condensed'>"+
+										"<tbody>"+
+											"<tr>"+
+												"<td><span class='label label-primary'>Endereço</span></td>"+
+												"<td>"+endereco+"</td>"+
+											"</tr>"+
+											"<tr>"+
+												"<td><span class='label label-primary'>Cidade</span></td>"+
+												"<td>"+cidade+"</td>"+
+											"</tr>"+
+											"<tr>"+
+												"<td><span class='label label-primary'>Estado:</span></td>"+
+												"<td>"+estado+"</td>"+
+											"</tr>"+
+											"<tr>"+
+												"<td><span class='label label-primary'>CEP:</span></td>"+
+												"<td>"+cep+"</td>"+
+											"</tr>"+
+											"<tr>"+
+												"<td><span class='label label-default'><span class='glyphicon glyphicon-earphone'></span>TELEFONE:</span></td>"+
+												"<td>"+telefones+"</td>"+
+											"</tr>"+
+											"<tr>"+
+												"<td><span class='label label-default'><span class='glyphicon glyphicon-file'></span>FAX:</span></td>"+
+												"<td>"+fax+"</td>"+
+										"</tr>"+
+										"</tbody>"+
+									"</table>"+
+								"</div>";
+	return informacoesEndereco;
+}
+function divNoticias(){
+	var noticias = "<div class='panel panel-info'>"+
+						"<div class='panel-heading'>Notícias</div>"+
+						"<div class='panel-body'>"+
+								"<ul class='nav nav-pills nav-stacked'>"+
+									"<li class='active'>"+
+										"<a href='#'>"+ 
+											"<span class='badge pull-right'>42</span>"+ 
+											"Light" +
+										"</a>"+
+									"</li>"+
+									"<li>" +
+										"<a href='#'>Servicos</a>" +
+									"</li>"+
+									"<li>"+
+										"<a href='#'>"+
+											"<span class='badge pull-right'>3</span>"+
+											"Energia" +
+										"</a>"+
+									"</li>"+
+								"</ul>"+
+						"</div>"+
+					"</div>";
+	return noticias;
+	
+}
+function montaGrafico(){
+	var grafico = 
+		$("<div class='panel panel-default'>"+
+			"<div class='panel-heading'>Cotacao"+
+			"</div>"+
+			"<div id='panelGrafico' class='panel-body'>"+
+				"<div id='container' style='height: 500px; min-width: 500px; display: block;'></div>"+
+			"</div>"+
+		"</div>").hide().fadeIn(2000);
+	$('#geral').append(grafico);
 	$.getJSON('http://www.highcharts.com/samples/data/jsonp.php?filename=aapl-c.json&callback=?', function(data) {
 		// Create the chart
 		$('#container').highcharts('StockChart', {
-
+	
 			rangeSelector : {
 				selected : 1
 			},
-
+	
 			title : {
 				text : 'AAPL Stock Price'
 			},
-
+	
 			series : [{
 				name : 'AAPL',
 				data : data,
@@ -210,18 +326,57 @@ $(function() {
 			}]
 		});
 	});
+	
+}
 
-});
+function montaNoticias(){
+	
+	var noticias = 
+		"<div class='panel panel-info'>"+
+			"<div class='panel-heading'>Noticias</div>"+
+			"<div id='panelNoticia' class='panel-body'>"+
+				//Noticias
+			"</div>"+
+		"</div>";
+	$('#geral').append(noticias);
+}
+
+function trataPapeis(cotacoes){
+	
+	for(var i = 0; i < cotacoes.length; i++){
+		
+		var papel = cotacoes[i][0];
+		var cotacs = cotacoes[i][1];
+
+		alert(papel);
+		alert(cotacs);
+		trataCotacoes(cotacs);
+	
+	}	
+}
+
+function trataCotacoes(dadosCotacoes){
+	
+	for(var i = 0; i < dadosCotacoes.length; i++){
+		
+		var time = Date.parse(dadosCotacoes[i][0].replace(" ","T"));
+		var valor = dadosCotacoes[i][2];
+
+	}
+	
+}
 
 function montaColuna(data){
 	
 	for(var i = 0; i < data.length; i++){
 		
 		var empresa = data[i].empresa;
+		var cotacoes = data[i].cotacoes;
+		trataPapeis(cotacoes);
 		
 		var cnpj = empresa.cnpj.trim();
 		var codigo_cvm = empresa.cod_cvm;
-		var nomeDaEmpresa = empresa.nome_empresa;
+		var nomeDaEmpresa = empresa.nome_empresa+" ";
 		var nomePregao = empresa.nome_pregao;
 		var codigosNegociados = empresa.cod_negociacao;
 		var atividadePrincipal = empresa.atividade_principal;
@@ -234,57 +389,60 @@ function montaColuna(data){
 		var cep = empresa.cep;
 		var telefone = empresa.telefone;
 		var fax = empresa.fax;
+		var site = empresa.site;
+
 		
 		var teste1 = "danger";
-		var teste2 = "arrow-down";
-		
-		var dadosGerais = 
-			"<h1 class='page-header'>Dados Gerais</h1>"+
-			"<h2 class='page-header'>"+nomeDaEmpresa+
-				"<span class='label label-"+teste1+"'><span class='glyphicon glyphicon-'"+teste2+"'></span>"+
-				"</span>" +
-			"</h2>"+
-			"<p class='lead'>"+atividadePrincipal+"</p>"+
-			"<div class='row placeholders'>"+
-				"<div class='col-xs-6 col-sm-3 placeholder'>"+
-					"<img class='img-circle' alt='100x100' src='"+$('#imgs').val()+'/'+cnpj+".jpg'/>"+
-				"</div>"+
 			
-				"<div class='col-xs-6 col-sm-9 placeholder'>"+
-					"<div class='panel panel-primary'>"+
-	  					"<div class='panel-body'>"+
-							"<address>"+
-								  "<strong>"+nomePregao+"</strong><br>"+
-								  endereco+"<br>"+
-								  cidade+", "+estado+" "+cep+"<br>"+
-								  "<abbr title='Phone'>P:</abbr>"+telefone+"<br>"+
-								  "<abbr title='Fax'>F:</abbr>"+fax+
-							"</address>"+
-						"</div>"+
+		var head = 
+			$("<div class='text-center'>"+
+					"<h1>"+nomeDaEmpresa+
+						"<span class='label label-"+teste1+"'>"+
+						"-4%</span>"+
+					"</h1>"+
+				"</div>").hide().fadeIn(2000);
+		
+		$("#resultado").append(head);
+		
+		var  lateral = 
+			
+			$(divNoticias()+
+						
+			"<div class='panel panel-info'>"+
+				"<div id='lateral' class='panel-body'>"+
+					"<div class='text-center'>" +
+						"<strong>"+nomePregao+"</strong>"+
+						"<img class='img-circle' alt='100x100' src='"+$('#imgs').val()+'/'+cnpj+".jpg'/>"+		
+						"</p>"+
 					"</div>"+
+				informacoesGerais(cnpj,codigo_cvm, atividadePrincipal,setor,sub_setor, segmento)+
+				informacoesPapeis(codigosNegociados)+
+				informacoesDeEndereco(endereco, cidade, estado, cep, montaTelefones(telefone), montaTelefones(fax))+	
 				"</div>"+
-			"</div>";
+				"<div class='panel-footer text-center'>"+
+					"<a href="+site+" class='btn btn-primary btn-xs' role='button'>"+site+"</a>"+
+				"</div>"+
+			"</div>").hide().fadeIn(2000);
 		
-		var resultado = dadosGerais;
-			  
+		$('#lateral').append(lateral);
 
-			
-		$("#resultado").append(resultado);
-
+		var geral = "<div class='panel panel-info'>"+
+						"<div id='geral' class='panel-body'>"+
+						"</div>"+
+					"</div>";
+		
+		$('#resultado').append(geral);
+		
+		montaGrafico();
+		montaNoticias();
 		
 		//Informacoes para contato...
-		var site = empresa.site;
 		
 		
 		//Midias sociais..
 		var emails = empresa.emails;
 		var twitter_empresa = empresa.twitter_empresa;
 		var facebook_empresa = empresa.twitter_empresa;
-		
-		
-		alert(Data.parse("2013-12-30 00:00:00"));
-
-		
 		
 		
 

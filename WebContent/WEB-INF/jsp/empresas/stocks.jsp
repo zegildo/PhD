@@ -9,14 +9,14 @@
 	rel="stylesheet">
 <link type="text/css" href="<c:url value="/css/docs_min.css"/>"
 	rel="stylesheet">
-	
+
 <link type="text/css" href="<c:url value="/css/Autocomplete.css"/>"
 	rel="stylesheet">
-    <title>StockHighNew</title>
+<title>StockHighNew</title>
 </head>
 <body>
 
- <input type='hidden' value='<c:url value="/imgs"/>' id='imgs' />  
+	<input type='hidden' value='<c:url value="/imgs"/>' id='imgs' />
 
 	<!-- Primeiro Menu do CabeÃ§alho -->
 	<header id="top" class="navbar navbar-static-top bs-docs-nav"
@@ -65,8 +65,7 @@
 				<!-- Barra de Busca-->
 				<div id="search" class=" page-header input-group highlight">
 					<input id="busca" type="text" name="nome" class="form-control"
-						style="margin: 0 auto;"> 
-						<span class="input-group-btn">
+						style="margin: 0 auto;"> <span class="input-group-btn">
 						<button id="searchButton" class="btn btn-primary" type="button">
 							&nbsp;&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-search"></span>&nbsp;&nbsp;&nbsp;&nbsp;
 						</button>
@@ -83,15 +82,13 @@
 				<div id="menu" class="page-header highlight " style="display: none;">
 
 					<select class="selectpicker show-menu-arrow show-tick"
-						data-header="Selecionar Grupo de Ações Por Setor, Subsetor e Segmento..." 
-						data-live-search="true" 
-						data-size="auto"
-						data-width="90%"
+						data-header="Selecionar Grupo de Ações Por Setor, Subsetor e Segmento..."
+						data-live-search="true" data-size="auto" data-width="90%"
 						data-show-subtext="true">
-						
-						<optgroup label="Setor" >
+
+						<optgroup label="Setor">
 							<c:forEach items="${setoresList}" var="setores">
-								 <option data-subtext="Setor">${setores}</option>
+								<option data-subtext="Setor">${setores}</option>
 							</c:forEach>
 						</optgroup>
 						<optgroup label="Sub Setor">
@@ -104,8 +101,8 @@
 								<option data-subtext="Segmento">${segmentos}</option>
 							</c:forEach>
 						</optgroup>
-					</select> 
-					
+					</select>
+
 					<button id="confSearch" class="btn btn-info pull-right"
 						type="button">
 						<span class="glyphicon glyphicon-th"></span>
@@ -114,9 +111,7 @@
 				<!-- fim de navegacao por botoes-->
 
 				<!-- Tabela de Resultados-->
-				<div id="resultado" class="page-header">
-					
-				</div>
+				<div id="resultado" class="page-header"></div>
 				<!-- Tabela de Resultados-->
 
 
@@ -358,17 +353,9 @@
 
 
 			<!--Menu lateral direito -->
-			<div class="col-md-3">
-				<div class=" page-header bs-docs-sidebar hidden-print affix-top"
-					role="complementary" style="">
-					<ul class="nav bs-docs-sidenav">
-						<li class="active"><a href="#download">Download</a></li>
-						<li class=""><a href="#whats-included">What's included</a>
-							<ul class="nav">
-								<li class=""><a href="#whats-included-precompiled">Precompiled</a>
-								</li>
-							</ul></li>
-				</div>
+			<div id="lateral" class="col-md-3">
+				
+
 			</div>
 			<!-- fim do Menu lateral direito-->
 
@@ -380,7 +367,6 @@
 
 
 	<footer class="bs-docs-footer" role="contentinfo">
-		<div class="container">
 			<div class="bs-docs-social">
 				<p>
 					Designed and built with all the love in the world by <a
