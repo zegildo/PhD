@@ -27,6 +27,8 @@
     
     <mapping class="entities.Empresas" />
     <mapping class="entities.Cotacoes" />
+    <mapping class="entities.Noticias" />
+    
     
     
   </session-factory>

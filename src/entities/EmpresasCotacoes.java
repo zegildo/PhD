@@ -7,11 +7,28 @@ public class EmpresasCotacoes {
 
 	private Empresas empresa;
 	private Map<String,List<Cotacoes>> cotacoes;
+	private List<Noticias> noticias;
 	
-	public EmpresasCotacoes(Empresas empresa, Map<String, List<Cotacoes>> cotacoes) {
+	public EmpresasCotacoes(Empresas empresa, Map<String, List<Cotacoes>> cotacoes, 
+			List<Noticias> noticias) {
 		this.empresa = empresa;
 		this.cotacoes = cotacoes;
+		this.noticias = noticias;
 	}
+	
+	
+
+	public List<Noticias> getNoticias() {
+		return noticias;
+	}
+
+
+
+	public void setNoticias(List<Noticias> noticias) {
+		this.noticias = noticias;
+	}
+
+
 
 	public Empresas getEmpresa() {
 		return empresa;

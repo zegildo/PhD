@@ -11,20 +11,26 @@ import br.com.caelum.vraptor.Result;
 import br.com.caelum.vraptor.view.Results;
 import dao.CotacoesDAO;
 import dao.EmpresaDAO;
+import dao.NoticiasDAO;
 import entities.Cotacoes;
 import entities.Empresas;
 import entities.EmpresasCotacoes;
+import entities.Noticias;
 
 @Resource
 public class EmpresasController {
 
 	private final EmpresaDAO empDAO;
 	private final CotacoesDAO cotaDAO;
+	private final NoticiasDAO noticDAO;
+
 	private final Result result;
 
-	public EmpresasController(EmpresaDAO empDAO, CotacoesDAO cotaDAO, Result result) {
+	public EmpresasController(EmpresaDAO empDAO, CotacoesDAO cotaDAO, 
+			NoticiasDAO noticDAO, Result result) {
 		this.empDAO = empDAO;
 		this.cotaDAO = cotaDAO;
+		this.noticDAO = noticDAO;
 		this.result = result;
 	}
 
@@ -59,16 +65,18 @@ public class EmpresasController {
 
 			Map<String, List<Cotacoes>> cotacoes = new HashMap<String, List<Cotacoes>>();
 			String[] codigos = getCodigosNegociacao(empresa);
-
+			List<Noticias> noticias = noticDAO.busca(empresa.getCnpj());
+			
 			for (String codigo : codigos) {
 				List<Cotacoes> cotacs = cotaDAO.busca(codigo);
 				cotacoes.put(codigo, cotacs);
 			}
-			empresasCotacoes.add(new EmpresasCotacoes(empresa, cotacoes));
+			
+			empresasCotacoes.add(new EmpresasCotacoes(empresa, cotacoes,noticias));
 
 		}
 		result.use(Results.json()).withoutRoot().from(empresasCotacoes)
-		.include("empresa").include("cotacoes").serialize();
+		.include("empresa").include("cotacoes").include("noticias").serialize();
 	}
 
 	private String[] getCodigosNegociacao(Empresas empresa){
