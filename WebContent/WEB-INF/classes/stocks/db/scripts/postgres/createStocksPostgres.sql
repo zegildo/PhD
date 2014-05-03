@@ -140,3 +140,21 @@ CREATE TABLE isins_inexistentes (
     cod_isin              CHAR(20) NOT NULL,
     PRIMARY KEY           (id)
 );
+
+CREATE TABLE informacoes(
+
+	data BIGINT,
+	conteudo text,
+	url VARCHAR(250),
+	fonte VARCHAR(50),
+	subFonte VARCHAR(50),
+ 	sobreTipo VARCHAR(50),
+	sobre VARCHAR(50),
+	emissor VARCHAR(200),
+	imagem VARCHAR(250),
+	repercussao INTEGER,
+	PRIMARY KEY (url)
+	
+
+);
+

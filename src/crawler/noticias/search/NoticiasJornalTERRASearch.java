@@ -15,7 +15,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import crawler.Crawlable;
-import crawler.Informacao;
+import crawler.Informacoes;
 import crawler.Utiles;
 import crawler.noticias.Noticia;
 
@@ -45,8 +45,8 @@ public class NoticiasJornalTERRASearch implements Crawlable {
 	}
 
 	@Override
-	public List<Informacao> getInformacao(String dataInicial, String dataFinal,
-			String consulta) {
+	public void insereInformacao(String dataInicial, String dataFinal,
+			String consulta, String tipo) {
 
 		long unixTimesTampDataInicial = 0; 
 		long unixTimesTampDataFinal = 0;
@@ -56,20 +56,20 @@ public class NoticiasJornalTERRASearch implements Crawlable {
 		unixTimesTampDataFinal = Utiles.dataToTimestamp(dataFinal, "2359");
 
 		Document pagina = obtemPagina(NUM_PAGINA);
-		List<Informacao> noticias = new ArrayList<Informacao>();
+		List<Informacoes> noticias = new ArrayList<Informacoes>();
 
 		//Obtem todos os dias da primeira pagina.
 		Elements noticiasTerraPrimeiraPagina = pagina.select(".list");
-		boolean limiteAlcancado =  verificaLimiteInformacao(noticiasTerraPrimeiraPagina, noticias, unixTimesTampDataInicial, unixTimesTampDataFinal);
+		boolean limiteAlcancado =  verificaLimiteInformacao(noticiasTerraPrimeiraPagina, 
+				noticias, unixTimesTampDataInicial, unixTimesTampDataFinal, tipo, consulta);
 
 		while(!limiteAlcancado){
 			NUM_PAGINA++;
 			pagina = obtemPagina(NUM_PAGINA);
 			noticiasTerraPrimeiraPagina = pagina.select(".list");
-			limiteAlcancado =  verificaLimiteInformacao(noticiasTerraPrimeiraPagina, noticias, unixTimesTampDataInicial, unixTimesTampDataFinal);
+			limiteAlcancado =  verificaLimiteInformacao(noticiasTerraPrimeiraPagina, noticias, 
+					unixTimesTampDataInicial, unixTimesTampDataFinal, tipo, consulta);
 		}
-
-		return noticias;
 	}
 
 	private String padronizaFormatoDDMMYYYY(String data){
@@ -86,9 +86,8 @@ public class NoticiasJornalTERRASearch implements Crawlable {
 	}
 
 	@Override
-	public boolean verificaLimiteInformacao(Elements dias,
-			List<Informacao> informacao, long unixTimesTampDataInicial,
-			long unixTimesTampDataFinal) {
+	public boolean verificaLimiteInformacao(Elements dias, long unixTimesTampDataInicial,
+			long unixTimesTampDataFinal, String tipo, String consulta) {
 
 		if(!dias.isEmpty()){
 
@@ -97,10 +96,10 @@ public class NoticiasJornalTERRASearch implements Crawlable {
 				for (Element dia : dias) {
 					long timesTampDia = timestampDoDia(dia);
 					/*Se a ultima noticia valor da lista(o mais antiga) ainda for menor
-					 * que o valor que busco, ent�o toda a lista deve ser adicionada.
+					 * que o valor que busco, entao toda a lista deve ser adicionada.
 					 */
 					if(timesTampDia >= unixTimesTampDataInicial){
-						List<Informacao> noticiasDoDia = criaInformacao(dia);
+						List<Informacoes> noticiasDoDia = criaInformacao(dia, tipo, consulta);
 						informacao.addAll(noticiasDoDia);
 					}else{
 						return true;
@@ -113,7 +112,7 @@ public class NoticiasJornalTERRASearch implements Crawlable {
 					long timesTampDia = timestampDoDia(dia);
 					if((timesTampDia <= unixTimesTampDataFinal) && 
 							(timesTampDia >= unixTimesTampDataInicial)){
-						List<Informacao> noticiasDoDia = criaInformacao(dia);
+						List<Informacoes> noticiasDoDia = criaInformacao(dia, tipo, consulta);
 						informacao.addAll(noticiasDoDia);
 					}else if(timesTampDia < unixTimesTampDataInicial){
 						return true;
@@ -135,12 +134,12 @@ public class NoticiasJornalTERRASearch implements Crawlable {
 
 	}
 
-	public List<Informacao> criaInformacao(Element el){
+	public List<Informacoes> criaInformacao(Element el, String tipo, String consulta){
 
 		String data = el.select("h2").text();
 		data = padronizaFormatoDDMMYYYY(data);
 		Elements notics = el.select("a");
-		List<Informacao> noticiasDoDia = new ArrayList<Informacao>();
+		List<Informacoes> noticiasDoDia = new ArrayList<Informacoes>();
 		for (Element notic : notics) {
 			String url = notic.attr("href");
 			String hora = notic.select("em").text();
@@ -162,7 +161,8 @@ public class NoticiasJornalTERRASearch implements Crawlable {
 			String tituloCompleto = integra.select(".ttl-main").text();
 			String texto = integra.select(".text").text();
 
-			noticiasDoDia.add(new Noticia(tituloCompleto, texto, timesTamp, url, PORTAL_TERRA, tituloResumo));
+			noticiasDoDia.add(new Noticia(tituloCompleto, texto, timesTamp, url, PORTAL_TERRA, 
+					tituloResumo, tipo, consulta));
 
 		}
 		return noticiasDoDia;
@@ -193,12 +193,7 @@ public class NoticiasJornalTERRASearch implements Crawlable {
 		String searchDateFinish="12/02/2014";
 
 		NoticiasJornalTERRASearch terra = new NoticiasJornalTERRASearch();
-		List<Informacao> noticias = terra.getInformacao(searchDateStart, searchDateFinish, "");
-
-		Noticia noticiaIn = (Noticia) noticias.get(0);
-		Noticia noticiaFim = (Noticia) noticias.get(noticias.size()-1);
-		System.out.println(noticiaIn);
-		System.out.println(noticiaFim);
+		terra.insereInformacao(searchDateStart, searchDateFinish, "", "");
 
 	}
 

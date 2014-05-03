@@ -1,17 +1,18 @@
 package crawler.noticias;
 
-import crawler.Informacao;
+import crawler.Informacoes;
 
 
-public class Noticia extends Informacao {
+public class Noticia extends Informacoes {
 
 	private String noticiaNaIntegra;
 	private String tituloResumo;
 	
-	public Noticia(String titulo, String noticiaNaIntegra, long timestamp, String URL, 
-			String fonteJornalista, String tituloResumo){
 	
-		super(timestamp, titulo, URL, fonteJornalista);
+	public Noticia(String titulo, String noticiaNaIntegra, long timestamp, String URL, 
+			String fonteJornalista, String tituloResumo,  String assunto, String detalhe){
+	
+		super(timestamp, titulo, URL, "JORNAL", fonteJornalista, assunto, detalhe);
 		setNoticiaNaIntegra(noticiaNaIntegra);
 		setTituloResumo(tituloResumo);
 	}
@@ -35,7 +36,7 @@ public class Noticia extends Informacao {
 	@Override
 	public String toString() {
 		return "Noticia [noticiaNaIntegra=" + noticiaNaIntegra
-				+ ", tituloResumo=" + tituloResumo + ", timestamp=" + timestamp
+				+ ", tituloResumo=" + tituloResumo + ", timestamp=" + data
 				+ ", conteudo=" + conteudo + ", URL=" + URL + ", fonte="
 				+ fonte + "]";
 	}
