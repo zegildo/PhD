@@ -48,8 +48,8 @@ public class TwitterSearch implements Crawlable {
 		unixTimesTampDataInicial = Utiles.dataToTimestamp(dataInicial, "0000");
 		unixTimesTampDataFinal = Utiles.dataToTimestamp(dataFinal, "2359");
 
-		consulta = Utiles.encondeConsulta(consulta);
-		Document paginaInicial = obtemPaginaInicial(consulta);
+		String consulta_utf8 = Utiles.encondeConsulta(consulta);
+		Document paginaInicial = obtemPaginaInicial(consulta_utf8);
 		String dataScrollCursor = obtemdataScrollCursor(paginaInicial);
 		Elements twts = obtemElementosTweets(paginaInicial);
 		System.out.println("Qtd twitters:"+twts.size());
@@ -60,7 +60,7 @@ public class TwitterSearch implements Crawlable {
 
 		while(!limiteAlcancado){
 
-			BufferedReader in = obtemPaginasConsecutivas(consulta, dataScrollCursor);
+			BufferedReader in = obtemPaginasConsecutivas(consulta_utf8, dataScrollCursor);
 			TweetsJson twets = gson.fromJson(in, TweetsJson.class);
 			Element e = paginaInicial.createElement("novaRequisicao");
 			e.html(twets.getItems_html());
@@ -180,8 +180,6 @@ public class TwitterSearch implements Crawlable {
 		
 		Informacoes t = new Informacoes (Long.valueOf(shortTimesTamp), textoTweet, referenciaTweet, 
 				"MÍDIAS SOCIAIS", "TWITTER",  tipo,  consulta,  citacaoTwitter, imagem, repercussao);
-		
-		getTwitterDAO().inserir(t);
 		return t;
 	}
 
@@ -197,6 +195,7 @@ public class TwitterSearch implements Crawlable {
 					if(tw.getTimestamp() < unixTimesTampDataInicial ){
 						return true;
 					}
+					getTwitterDAO().inserir(tw);
 				}
 				return false;
 
@@ -206,7 +205,7 @@ public class TwitterSearch implements Crawlable {
 					tw = criaInformacao(el,sobreTipo, consulta);
 					if((tw.getTimestamp() <= unixTimesTampDataFinal) && 
 							(tw.getTimestamp() >= unixTimesTampDataInicial)){
-						return false;
+						getTwitterDAO().inserir(tw);
 					}else if(tw.getTimestamp() < unixTimesTampDataInicial){
 						return true;
 					}	
