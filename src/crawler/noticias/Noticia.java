@@ -1,44 +1,116 @@
 package crawler.noticias;
 
-import crawler.Informacoes;
+import java.util.List;
+
+import org.jsoup.nodes.Element;
+
+import crawler.Crawlable;
 
 
-public class Noticia extends Informacoes {
+public abstract class Noticia implements Crawlable{
 
-	private String noticiaNaIntegra;
-	private String tituloResumo;
+	private long  timestamp;
+	private String fonte;
+	private String subFonte;
+	private String titulo;
+	private String subTitulo;
+	private String conteudo;
+	private String emissor;
+	private String url;
 	
-	
-	public Noticia(String titulo, String noticiaNaIntegra, long timestamp, String URL, 
-			String fonteJornalista, String tituloResumo,  String assunto, String detalhe){
-	
-		super(timestamp, titulo, URL, "JORNAL", fonteJornalista, assunto, detalhe);
-		setNoticiaNaIntegra(noticiaNaIntegra);
-		setTituloResumo(tituloResumo);
+	private long repercussao;
+
+	public Noticia(){
+		
 	}
 
-	public String getTituloResumo() {
-		return tituloResumo;
+	public Noticia(long timestamp, String subFonte,
+			String titulo, String subTitulo, String conteudo, 
+			String emissor, String url, long repercussao){
+
+		setTimestamp(timestamp);
+		setFonte("JORNAL");
+		setSubFonte(subFonte);
+		setTitulo(titulo);
+		setSubTitulo(subTitulo);
+		setConteudo(conteudo);
+		setEmissor(emissor);
+		setUrl(url);
+		setRepercussao(repercussao);
 	}
-	
-	public void setTituloResumo(String tituloResumo) {
-		this.tituloResumo = tituloResumo;
+	public List<Noticia> criaInformacao(Element el, String tipo, String consulta){
+		return null;
 	}
-	
-	public String getNoticiaNaIntegra() {
-		return noticiaNaIntegra;
+
+	public String getUrl() {
+		return url;
 	}
-	
-	public void setNoticiaNaIntegra(String noticiaNaIntegra) {
-		this.noticiaNaIntegra = noticiaNaIntegra;
+
+	public void setUrl(String url) {
+		this.url = url;
 	}
 	
 	@Override
 	public String toString() {
-		return "Noticia [noticiaNaIntegra=" + noticiaNaIntegra
-				+ ", tituloResumo=" + tituloResumo + ", timestamp=" + data
-				+ ", conteudo=" + conteudo + ", URL=" + URL + ", fonte="
-				+ fonte + "]";
+		return timestamp + "|" + fonte
+				+ "|" + subFonte + "|" + titulo
+				+ "|" + subTitulo + "|" + conteudo
+				+ "|" + emissor + "|" + url + "|"
+				+ repercussao;
+	}
+
+	public long getTimestamp() {
+		return timestamp;
+	}
+	public void setTimestamp(long timestamp) {
+		this.timestamp = timestamp;
+	}
+
+	public String getFonte() {
+		return fonte;
+	}
+	public void setFonte(String fonte) {
+		this.fonte = fonte;
+	}
+	public String getSubFonte() {
+		return subFonte;
+	}
+	public void setSubFonte(String subFonte) {
+		this.subFonte = subFonte;
+	}
+	public String getTitulo() {
+		return titulo;
+	}
+	public void setTitulo(String titulo) {
+		this.titulo = titulo;
+	}
+	public String getSubTitulo() {
+		return subTitulo;
+	}
+	public void setSubTitulo(String subTitulo) {
+		this.subTitulo = subTitulo;
+	}
+	public String getConteudo() {
+		return conteudo;
+	}
+	public void setConteudo(String conteudo) {
+		this.conteudo = conteudo;
 	}
 	
+	public String getEmissor() {
+		return emissor;
+	}
+	public void setEmissor(String emissor) {
+		this.emissor = emissor;
+	}
+	public long getRepercussao() {
+		return repercussao;
+	}
+	public void setRepercussao(long repercussao) {
+		this.repercussao = repercussao;
+	}
+
+
+
+
 }

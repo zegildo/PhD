@@ -4,7 +4,7 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import br.com.caelum.vraptor.ioc.Component;
-import crawler.Informacoes;
+import crawler.Informacao;
 
 @Component
 public class InformacoesDAO {
@@ -15,7 +15,7 @@ public class InformacoesDAO {
 		this.session = session;
 	}
 	
-	public void inserir(Informacoes info) {
+	public void inserir(Informacao info) {
 		Transaction tx = session.beginTransaction();
 		session.save(info);
 		tx.commit();

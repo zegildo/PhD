@@ -11,7 +11,7 @@
     capacida
     </property>
     <property name="hibernate.connection.url">
-      jdbc:postgresql://localhost/stocks
+      jdbc:postgresql://localhost/postgres
     </property>
     <property name="hibernate.connection.driver_class">
       org.postgresql.Driver

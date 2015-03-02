@@ -3,7 +3,7 @@ package crawler.twitter;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
-import crawler.Informacoes;
+import crawler.Informacao;
 
 public class Tweet{ //extends Informacoes{
 

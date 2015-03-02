@@ -1,12 +1,14 @@
 package crawler;
 
-import org.jsoup.select.Elements;
+import java.util.List;
 
-import dao.InformacoesDAO;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+
+import crawler.noticias.Noticia;
 
 public interface Crawlable {
 	
-	public void insereInformacao(String dataInicial, String dataFinal, String consulta, String tipo, InformacoesDAO twitterDAO);
-	public boolean verificaLimiteInformacao(Elements informacoesHTML, 
-			long unixTimesTampDataInicial, long unixTimesTampDataFinal,String consulta, String tipo);
+	public List<Noticia> criaInformacao(Element el, String tipo, String consulta);
+	public Document obtemPagina(String url);
 }
