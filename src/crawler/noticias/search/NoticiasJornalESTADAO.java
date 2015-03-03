@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.jsoup.Connection;
 import org.jsoup.Connection.Method;
 import org.jsoup.HttpStatusException;
@@ -26,7 +28,7 @@ public class NoticiasJornalESTADAO extends Noticia{
 	private static final String URL_ESTADAO = "http://busca.estadao.com.br/?editoria[]=Economia&pagina=";
 	private static int NUM_PAGINA = 1;
 	private static final String CONSULTA = "&q=";
-	
+
 	private DBCollection mongoCollection = null;
 
 	private static final Map<String, String> mesesDoAno;
@@ -54,7 +56,7 @@ public class NoticiasJornalESTADAO extends Noticia{
 
 	public NoticiasJornalESTADAO(long timestamp, String subFonte,
 			String titulo, String subTitulo, String conteudo, 
-			String emissor, String url, long repercussao) {
+			String emissor, String url, String repercussao) {
 
 		super(timestamp, subFonte, titulo, subTitulo, conteudo, emissor, url, repercussao);
 	}
@@ -63,13 +65,14 @@ public class NoticiasJornalESTADAO extends Noticia{
 		return mesesDoAno;
 	}
 
+
 	public Document obtemPagina(String url){
 
 		Connection.Response res;
 		Document paginaInicial = null;
 
 		try {
-			
+
 			res = Jsoup.connect(url).method(Method.GET).execute();
 			paginaInicial = res.parse();
 
@@ -85,6 +88,19 @@ public class NoticiasJornalESTADAO extends Noticia{
 		return paginaInicial;
 	}
 
+	public Document obtemPaginaIgnoringType(String url){
+		Document countPage = null;
+		try {
+			countPage = Jsoup.connect(url).ignoreContentType(true).get();
+
+		} catch (IOException e) {
+			return null;
+		}
+
+		return countPage;
+
+	}
+	
 	public void insereInformacao(String dataInicial, String dataFinal,
 			String consulta) throws IOException {
 
@@ -193,18 +209,18 @@ public class NoticiasJornalESTADAO extends Noticia{
 
 	public DBObject converterToMap(Noticia noticia) {   
 		//timestamp, subFonte, titulo, subTitulo, conteudo, emissor, url, repercussao
-        DBObject news = new BasicDBObject();  
-        news.put("timestamp", noticia.getTimestamp());  
-        news.put("subFonte", noticia.getSubFonte());  
-        news.put("titulo", noticia.getTitulo());  
-        news.put("subTitulo", noticia.getSubTitulo());  
-        news.put("conteudo", noticia.getConteudo());  
-        news.put("emissor", noticia.getEmissor());  
-        news.put("url", noticia.getUrl());  
-        news.put("repercussao", noticia.getRepercussao());  
-        
-        return news;    
-    }
+		DBObject news = new BasicDBObject();  
+		news.put("timestamp", noticia.getTimestamp());  
+		news.put("subFonte", noticia.getSubFonte());  
+		news.put("titulo", noticia.getTitulo());  
+		news.put("subTitulo", noticia.getSubTitulo());  
+		news.put("conteudo", noticia.getConteudo());  
+		news.put("emissor", noticia.getEmissor());  
+		news.put("url", noticia.getUrl());  
+		news.put("repercussao", noticia.getRepercussao());  
+
+		return news;    
+	}
 	public Noticia criaInformacao(String data, Element el, String consulta){
 
 		String hora = el.select(".listainfo span").text();
@@ -223,49 +239,87 @@ public class NoticiasJornalESTADAO extends Noticia{
 		if(doc.baseUri().isEmpty()){
 			return null;
 		}
-		
+
 		String subTitulo = doc.select(".chapeu p").text();
 		String emissor = el.select(".credito").text();
 		String conteudo = doc.select(".noticiainterna p").text();
-		
+
 		if(conteudo.isEmpty()){
 			conteudo = doc.select(".texto p").text();
+			if(conteudo.isEmpty()){
+				return null;
+			}
 		}
-		
+
 		conteudo = conteudo.replace("|", "");
 		conteudo = conteudo.replace("\"", "");
 		conteudo = conteudo.replace("\'", "");
-		
+
 		String guid = doc.select("#guid_noticia").attr("value");
-		int repercussao = calculaRepercussao(url, guid);
-		
+		String repercussao = calculaRepercussao(url, guid);
+
 		return new NoticiasJornalESTADAO(timestamp, "ESTADAO",
 				titulo, subTitulo, conteudo, 
 				emissor, url, repercussao);
 
 	}
 
-	public int calculaRepercussao(String url, String guid){
+	public String calculaRepercussao(String url, String guid){
+
+
+		final String comentariosPage = "http://economia.estadao.com.br/servicos/comentarios/contador/?guid[]="+guid;
+		int comentarios = getCount(comentariosPage, "contador");
+
+		final String tweeterPage = "https://cdn.api.twitter.com/1/urls/count.json?url="+url+"&callback=jQuery11100053468162895262794_1425342668803&_=1425342668804";
+		int tweeter = getCount(tweeterPage, "count");
+
+		final String facebookPage = "https://graph.facebook.com/fql?q=SELECT%20url,%20normalized_url,%20share_count,%20like_count,%20comment_count,%20total_count,commentsbox_count,%20comments_fbid,%20click_count%20FROM%20link_stat%20WHERE%20url=%27"+url+"%27&callback=jQuery11100053468162895262794_1425342668801&_=1425342668802";
+		int facebook = getCount(facebookPage, "total_count");
 		
+		final String linkedInPage = "https://www.linkedin.com/countserv/count/share?format=jsonp&url="+url+"&callback=jQuery11100053468162895262794_1425342668805&_=1425342668806";
+		int linkedIn = getCount(linkedInPage, "count");
 		
-		final String comentarios = "http://economia.estadao.com.br/servicos/comentarios/contador/?guid[]="+guid;
-		Document pagina = obtemPagina(comentarios);
-		while(pagina == null){
-			pagina = obtemPagina(comentarios);
-		}
-		System.out.println(pagina);
-		final String tweeter = "https://cdn.api.twitter.com/1/urls/count.json?url="+url+"&callback=jQuery11100053468162895262794_1425342668803&_=1425342668804";
-		System.out.println(obtemPagina(tweeter));
-		final String facebook = "https://graph.facebook.com/fql?q=SELECT%20url,%20normalized_url,%20share_count,%20like_count,%20comment_count,%20total_count,commentsbox_count,%20comments_fbid,%20click_count%20FROM%20link_stat%20WHERE%20url=%27"+url+"%27&callback=jQuery11100053468162895262794_1425342668801&_=1425342668802";
-		System.out.println(obtemPagina(facebook));
-		final String linkedIn = "https://www.linkedin.com/countserv/count/share?format=jsonp&url="+url+"&callback=jQuery11100053468162895262794_1425342668805&_=1425342668806";
-		System.out.println(obtemPagina(linkedIn));
-		final String googleplus = "http://economia.estadao.com.br/estadao/sharrre.php?url="+url+"&type=googlePlus";
-		System.out.println(obtemPagina(googleplus));
-		return 0;
+		final String googleplusPage = "http://economia.estadao.com.br/estadao/sharrre.php?url="+url+"&type=googlePlus";		
+		int googlePlus = getCount(googleplusPage, "count");
+		
+		int total = comentarios+tweeter+facebook+linkedIn+googlePlus;
+		return "c:"+comentarios+",t:"+tweeter+",f:"+facebook+",l:"+linkedIn+",g:"+googlePlus+",total:"+total;
 	}
 
-	
+	public int getCount(String url, String atributo){
+		
+		Document pagina = obtemPaginaIgnoringType(url);
+		while(pagina == null){
+			pagina = obtemPaginaIgnoringType(url);
+		}
+		String json = pagina.select("body").text();
+		
+		if(json.contains("(")){
+			json = json.substring(json.indexOf("(")+1, json.indexOf(")"));
+		}
+		
+		int count  = 0;
+		JSONParser parser = new JSONParser();
+		KeyFinder finder = new KeyFinder();
+		finder.setMatchKey(atributo);
+		try{
+			while(!finder.isEnd()){
+				parser.parse(json, finder, true);
+				if(finder.isFound()){
+					finder.setFound(false);
+					System.out.println(finder.getValue());
+					count = ((Long)finder.getValue()).intValue();
+					return count;
+				}
+			}           
+		}
+		catch(ParseException pe){
+			pe.printStackTrace();
+		}
+		return count;
+	}
+
+
 
 	public static void main(String args[]) throws IOException{
 

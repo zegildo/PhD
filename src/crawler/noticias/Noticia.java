@@ -18,7 +18,7 @@ public abstract class Noticia implements Crawlable{
 	private String emissor;
 	private String url;
 	
-	private long repercussao;
+	private String repercussao;
 
 	public Noticia(){
 		
@@ -26,7 +26,7 @@ public abstract class Noticia implements Crawlable{
 
 	public Noticia(long timestamp, String subFonte,
 			String titulo, String subTitulo, String conteudo, 
-			String emissor, String url, long repercussao){
+			String emissor, String url, String repercussao){
 
 		setTimestamp(timestamp);
 		setFonte("JORNAL");
@@ -103,10 +103,10 @@ public abstract class Noticia implements Crawlable{
 	public void setEmissor(String emissor) {
 		this.emissor = emissor;
 	}
-	public long getRepercussao() {
+	public String getRepercussao() {
 		return repercussao;
 	}
-	public void setRepercussao(long repercussao) {
+	public void setRepercussao(String repercussao) {
 		this.repercussao = repercussao;
 	}
 
