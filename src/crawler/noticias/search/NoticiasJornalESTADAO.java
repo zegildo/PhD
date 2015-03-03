@@ -1,20 +1,18 @@
 package crawler.noticias.search;
 
-
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jsoup.Connection;
+import org.jsoup.Connection.Method;
 import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import com.gargoylesoftware.htmlunit.BrowserVersion;
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
@@ -67,23 +65,17 @@ public class NoticiasJornalESTADAO extends Noticia{
 
 	public Document obtemPagina(String url){
 
-		//Connection.Response res;
+		Connection.Response res;
 		Document paginaInicial = null;
 
 		try {
 			
-			final WebClient webClient = new WebClient(BrowserVersion.CHROME);
-		    final HtmlPage page = webClient.getPage(url);
-		    final String pageAsXml = page.asXml();
-			
-		   
-			//res = Jsoup.connect(url).method(Method.GET).execute();
-			paginaInicial = Jsoup.parse(pageAsXml);
+			res = Jsoup.connect(url).method(Method.GET).execute();
+			paginaInicial = res.parse();
 
-			//Alguns links estao vazios e nao podem ser encontrados
 		} catch (HttpStatusException e) {
 
-			return new Document("");
+			return null;
 
 		} catch (IOException e) {
 
@@ -222,11 +214,6 @@ public class NoticiasJornalESTADAO extends Noticia{
 		String url = el.select(".listadesc a").attr("href");
 		String titulo = el.select(".listadesc h3").text();
 		System.out.println("\t -"+titulo);
-		String emissor = el.select(".listadesc p").text();
-		String repercussao = el.select(".balaoComentario").text();
-		if(repercussao.isEmpty()){
-			repercussao="0";
-		}
 
 		Document doc = obtemPagina(url);
 		while(doc == null){
@@ -236,20 +223,49 @@ public class NoticiasJornalESTADAO extends Noticia{
 		if(doc.baseUri().isEmpty()){
 			return null;
 		}
+		
 		String subTitulo = doc.select(".chapeu p").text();
-		String conteudo = doc.select(".noticiainterna p").text().replace("|", "");
-
+		String emissor = el.select(".credito").text();
+		String conteudo = doc.select(".noticiainterna p").text();
+		
 		if(conteudo.isEmpty()){
-			conteudo = doc.select(".texto p").text().replace("|", "");
+			conteudo = doc.select(".texto p").text();
 		}
-
+		
+		conteudo = conteudo.replace("|", "");
+		conteudo = conteudo.replace("\"", "");
+		conteudo = conteudo.replace("\'", "");
+		
+		String guid = doc.select("#guid_noticia").attr("value");
+		int repercussao = calculaRepercussao(url, guid);
+		
 		return new NoticiasJornalESTADAO(timestamp, "ESTADAO",
 				titulo, subTitulo, conteudo, 
-				emissor, url, Long.valueOf(repercussao));
+				emissor, url, repercussao);
 
 	}
 
+	public int calculaRepercussao(String url, String guid){
+		
+		
+		final String comentarios = "http://economia.estadao.com.br/servicos/comentarios/contador/?guid[]="+guid;
+		Document pagina = obtemPagina(comentarios);
+		while(pagina == null){
+			pagina = obtemPagina(comentarios);
+		}
+		System.out.println(pagina);
+		final String tweeter = "https://cdn.api.twitter.com/1/urls/count.json?url="+url+"&callback=jQuery11100053468162895262794_1425342668803&_=1425342668804";
+		System.out.println(obtemPagina(tweeter));
+		final String facebook = "https://graph.facebook.com/fql?q=SELECT%20url,%20normalized_url,%20share_count,%20like_count,%20comment_count,%20total_count,commentsbox_count,%20comments_fbid,%20click_count%20FROM%20link_stat%20WHERE%20url=%27"+url+"%27&callback=jQuery11100053468162895262794_1425342668801&_=1425342668802";
+		System.out.println(obtemPagina(facebook));
+		final String linkedIn = "https://www.linkedin.com/countserv/count/share?format=jsonp&url="+url+"&callback=jQuery11100053468162895262794_1425342668805&_=1425342668806";
+		System.out.println(obtemPagina(linkedIn));
+		final String googleplus = "http://economia.estadao.com.br/estadao/sharrre.php?url="+url+"&type=googlePlus";
+		System.out.println(obtemPagina(googleplus));
+		return 0;
+	}
 
+	
 
 	public static void main(String args[]) throws IOException{
 
