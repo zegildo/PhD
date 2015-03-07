@@ -323,7 +323,7 @@ public class NoticiasJornalESTADAO extends Noticia{
 
 	public static void main(String args[]) throws IOException{
 
-		String searchDateStart= "01/05/2000";
+		String searchDateStart= "01/01/2000";
 		String searchDateFinish="01/03/2015";
 		NoticiasJornalESTADAO n = new NoticiasJornalESTADAO();
 		n.insereInformacao(searchDateStart, searchDateFinish, "economia");

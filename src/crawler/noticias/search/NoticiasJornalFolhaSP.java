@@ -252,12 +252,12 @@ public class NoticiasJornalFolhaSP extends Noticia {
 		final String linkedInPage = "https://www.linkedin.com/countserv/count/share?format=jsonp&url="+url+"&callback=jQuery11100053468162895262794_1425342668805&_=1425342668806";
 		int linkedIn = getCount(linkedInPage, "count");
 		
-		final String googleplusPage = "http://economia.estadao.com.br/estadao/sharrre.php?url="+url+"&type=googlePlus";		
-		int googlePlus = getCount(googleplusPage, "count");
+		//final String googleplusPage = "http://economia.estadao.com.br/estadao/sharrre.php?url="+url+"&type=googlePlus";		
+		//int googlePlus = getCount(googleplusPage, "count");
 		
-		int total = comentarios+tweeter+facebook+linkedIn+googlePlus;
-		System.out.println("c:"+comentarios+",t:"+tweeter+",f:"+facebook+",l:"+linkedIn+",g:"+googlePlus+",total:"+total);
-		return "c:"+comentarios+",t:"+tweeter+",f:"+facebook+",l:"+linkedIn+",g:"+googlePlus+",total:"+total;
+		int total = comentarios+tweeter+facebook+linkedIn;
+		System.out.println("c:"+comentarios+",t:"+tweeter+",f:"+facebook+",l:"+linkedIn+",total:"+total);
+		return "c:"+comentarios+",t:"+tweeter+",f:"+facebook+",l:"+linkedIn+",total:"+total;
 	}
 
 	public int getCount(String url, String atributo){
@@ -299,7 +299,7 @@ public class NoticiasJornalFolhaSP extends Noticia {
 	public static void main(String args[]) throws IOException{
 
 		String searchDateStart= "01/01/2000";
-		String searchDateFinish="31/12/2014";
+		String searchDateFinish="01/03/2015";
 		NoticiasJornalFolhaSP n = new NoticiasJornalFolhaSP();
 		/*
 		 * Na Folha de São Paulo o nome do cardeno é MERCADO ao invés de ECONOMIA
