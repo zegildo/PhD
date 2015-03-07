@@ -26,7 +26,7 @@ public class NoticiasJornalG1 extends Noticia {
 
 
 	private static final String URL_ESTADAO = "http://g1.globo.com/dynamo/plantao/economia/";
-	private static int NUM_PAGINA = 1;
+	private static int NUM_PAGINA = 104;
 
 	private DBCollection mongoCollection = null;
 
@@ -142,12 +142,12 @@ public class NoticiasJornalG1 extends Noticia {
 
 				for (Object notic : noticias.toArray()) {
 					Noticia noticia = criaInformacao((JSONObject) notic);
-					if(noticia.getTimestamp() >= unixTimesTampDataInicial){
-						if(noticia != null){
+					if(noticia != null){
+						if(noticia.getTimestamp() >= unixTimesTampDataInicial){
 							mongoCollection.insert(converterToMap(noticia));
+						}else{
+							return true;
 						}
-					}else{
-						return true;
 					}
 				}
 
@@ -156,15 +156,14 @@ public class NoticiasJornalG1 extends Noticia {
 				for (Object notic : noticias.toArray()) {
 
 					Noticia noticia = criaInformacao((JSONObject) notic);
-					if((noticia.getTimestamp() <= unixTimesTampDataFinal) && 
-							(noticia.getTimestamp() >= unixTimesTampDataInicial)){
-						if(noticia != null){
+					if(noticia != null){
+						if((noticia.getTimestamp() <= unixTimesTampDataFinal) && 
+								(noticia.getTimestamp() >= unixTimesTampDataInicial)){
 							mongoCollection.insert(converterToMap(noticia));
-						}
-					}else if(noticia.getTimestamp() < unixTimesTampDataInicial){
-						return true;
-					}	
-
+						}else if(noticia.getTimestamp() < unixTimesTampDataInicial){
+							return true;
+						}	
+					}
 				}
 				return false;
 			}
@@ -191,10 +190,15 @@ public class NoticiasJornalG1 extends Noticia {
 
 		String url = data.get("permalink").toString();
 		String titulo = data.get("titulo").toString();
+
+		if("Quadro do pintor espanhol Miró é vendido por US$ 23,5 milhões".equals(titulo)){
+			System.out.println("cheguei");
+		}
+
 		String editoria = data.get("editoria_principal").toString();
 
 		String subTitulo = "";
-		
+
 		if(data.get("subtitulo")!= null){
 			subTitulo = data.get("subtitulo").toString();
 		}
@@ -202,15 +206,24 @@ public class NoticiasJornalG1 extends Noticia {
 		System.out.println("\t -"+titulo);
 
 		Document doc = obtemPagina(url);
-		while(doc == null){
+		int tentativas = 0;
+		while((doc == null) && (tentativas <= 5)){
 			doc = obtemPagina(url);
+			tentativas++;	
 		}
 
-		if(doc.baseUri().isEmpty()){
+		if(doc == null){
 			return null;
 		}
 
 		String momento = doc.select(".materia-cabecalho .published").text();
+		if(momento.isEmpty()){
+			momento = doc.select(".data-criacao").text();
+			if(momento.isEmpty()){
+				return null;
+			}
+		}
+		
 		String dataHora[] = momento.split(" ");
 		long timestamp = Utiles.dataToTimestamp(dataHora[0], dataHora[1].replace("h", ""));	
 
@@ -223,16 +236,18 @@ public class NoticiasJornalG1 extends Noticia {
 		conteudo = conteudo.replace("\'", "");
 
 		String id = doc.select("input[name=item_id]").attr("value");
-		
+
 		if(!("economia".equals(editoria))){
 			editoria = editoria.toLowerCase();
 			editoria = editoria.replace(" ", "-");
 			id="@@"+editoria+"/"+id;
 		}
-		
-		String id2 = doc.select("#input-link-ferramentas").attr("value");
 
-		String repercussao = calculaRepercussao(url, id, id2.replace("/", "@@"), URLEncoder.encode(titulo.trim()));
+		String id2 = doc.select("#input-link-ferramentas").attr("value");
+		String comentarios = doc.select("#boxComentarios").text();
+
+
+		String repercussao = calculaRepercussao(comentarios,url, id, id2.replace("/", "@@"), URLEncoder.encode(titulo.trim()));
 
 		return new NoticiasJornalESTADAO(timestamp, "G1",
 				titulo, subTitulo, conteudo, 
@@ -240,11 +255,15 @@ public class NoticiasJornalG1 extends Noticia {
 
 	}
 
-	public String calculaRepercussao(String url, String id, String id2, String titulo){
+	public String calculaRepercussao(String comment, String url, String id, String id2, String titulo){
 
 		final String comentariosPage = "http://comentarios.globo.com/comentarios/@@jornalismo@@g1@@economia"+id+"/"+url.replace("/", "@@")+"/"+id2+"/"+titulo+"/numero";
-		System.out.println(comentariosPage);
-		int comentarios = getCount(comentariosPage, "numeroDeComentarios");
+		int comentarios = 0; 
+		if(comment!= null && comment.length() > 0){
+			comentarios = getCount(comentariosPage, "numeroDeComentarios");			
+
+		}
+
 
 		final String tweeterPage = "https://cdn.api.twitter.com/1/urls/count.json?url="+url+"&callback=jQuery11100053468162895262794_1425342668803&_=1425342668804";
 		int tweeter = getCount(tweeterPage, "count");
@@ -259,6 +278,7 @@ public class NoticiasJornalG1 extends Noticia {
 		//int googlePlus = getCount(googleplusPage, "count");
 
 		int total = comentarios+tweeter+facebook+linkedIn;
+		System.out.println("c:"+comentarios+",t:"+tweeter+",f:"+facebook+",l:"+linkedIn+",total:"+total);
 		return "c:"+comentarios+",t:"+tweeter+",f:"+facebook+",l:"+linkedIn+",total:"+total;
 	}
 
@@ -283,7 +303,6 @@ public class NoticiasJornalG1 extends Noticia {
 				parser.parse(json, finder, true);
 				if(finder.isFound()){
 					finder.setFound(false);
-					System.out.println(finder.getValue());
 					count = ((Long)finder.getValue()).intValue();
 					return count;
 				}
