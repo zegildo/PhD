@@ -33,6 +33,7 @@ public class NoticiasJornalESTADAO extends Noticia{
 
 	private static final Map<String, String> mesesDoAno;
 	static {
+		
 		Map<String, String> aMap = new HashMap<String, String>();
 		aMap.put("janeiro", "01");
 		aMap.put("fevereiro", "02");
