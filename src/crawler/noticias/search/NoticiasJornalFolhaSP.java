@@ -23,8 +23,7 @@ import crawler.noticias.Noticia;
 public class NoticiasJornalFolhaSP extends Noticia {
 
 	private static final String URL_FOLHASP = "http://search.folha.com.br/search?";
-	private static int NUM_PAGINA = 1;
-	//private BufferedWriter gravarArq = null;
+	private static int NUM_PAGINA = 25301;
 	private DBCollection mongoCollection = null;
 
 	public NoticiasJornalFolhaSP(){}
@@ -72,7 +71,7 @@ public class NoticiasJornalFolhaSP extends Noticia {
 		return countPage;
 
 	}
-	
+
 	public void insereInformacao(String dataInicial, String dataFinal,
 			String consulta) throws IOException {
 
@@ -175,7 +174,7 @@ public class NoticiasJornalFolhaSP extends Noticia {
 
 		return true;
 	}
-	
+
 	public DBObject converterToMap(Noticia noticia) {   
 		//timestamp, subFonte, titulo, subTitulo, conteudo, emissor, url, repercussao
 		DBObject news = new BasicDBObject();  
@@ -196,47 +195,91 @@ public class NoticiasJornalFolhaSP extends Noticia {
 		String url = el.select("a").attr("href");
 		if (url == null || url.length() == 0){
 			System.out.println(el);
-		
+
 		}else{
-		
+
 			Document doc = obtemPagina(url);
-			
-			while(doc == null){
-				doc = obtemPagina(url);
+			String corpo = doc.select("body").text();
+
+			if(corpo.isEmpty()){
+				url = doc.select("meta[http-equiv=Refresh]").attr("content");
+				url = url.split("=")[1];
+				doc = null;
 			}
-			
-			String tempo = doc.select("time").text();
-			
-			if(tempo.isEmpty()){
-				System.out.println("Não tem tempo para: - "+url);
+
+			int tentativas = 0;
+			while((doc == null) && (tentativas <= 10)){
+				doc = obtemPagina(url);
+				tentativas++;	
+			}
+
+			if(doc == null){
 				return null;
+			}
+
+			String data = "";
+			String hora = "";
+			long timestamp = 0;
+			String tempo = doc.select("time").text();
+
+			if(!tempo.isEmpty()){
+				
+				data = tempo.split(" ")[0];
+				hora = tempo.split(" ")[1];
+				timestamp = Utiles.dataToTimestamp(data, hora.replace("h", ""));
 			
 			}else{
+				
+				tempo = doc.select("#articleDate").text();
+				
+				if(!tempo.isEmpty()){
+					data = tempo.split("-")[0].trim();
+					hora = tempo.split("-")[1].trim();
+					timestamp = Utiles.dataToTimestamp(data, hora.replace("h", ""));		
+				}else{
+					System.out.println("Nao houve como capturar o tempo aqui...");
+					return null;
+				}
 			
-				String data = tempo.split(" ")[0];
-				String hora = tempo.split(" ")[1];
-				long timestamp = Utiles.dataToTimestamp(data, hora.replace("h", ""));		
-
-				String titulo = doc.select("article header h1").text();
-				System.out.println("\t -"+titulo);
-				
-				String emissor = doc.select(".author p").text();
-				
-				String id = doc.select(".shortcut").attr("data-shortcut");
-				id = id.substring(id.lastIndexOf("o")+1,id.length());
-
-				String repercussao = calculaRepercussao(url,id);
-				String conteudo = doc.select("article .content p").text();
-
-				return new NoticiasJornalESTADAO(timestamp, "FOLHASP",
-						titulo, "", conteudo, 
-						emissor, url, repercussao);
 			}
+
+			String titulo = doc.select("article header h1").text();
+			
+			if(titulo.isEmpty()){
+				titulo = doc.select("#articleNew h1").text();
+			}
+			
+			System.out.println("\t -"+titulo);
+
+			if(titulo.contains("\"")){
+				return null;
+			}
+
+			String emissor = doc.select(".author p").text();
+			
+			if(emissor.isEmpty()){
+				emissor = doc.select("#articleBy p ").text();
+			}
+
+			String id = doc.select(".shortcut").attr("data-shortcut");
+			id = id.substring(id.lastIndexOf("o")+1,id.length());
+ 
+			String repercussao = calculaRepercussao(url,id);
+			String conteudo = doc.select("article .content p").text();
+			
+			if(conteudo.isEmpty()){
+				conteudo = doc.select("#articleNew p").text();
+			}
+
+			return new NoticiasJornalESTADAO(timestamp, "FOLHASP",
+					titulo, "", conteudo, 
+					emissor, url, repercussao);
 		}
+
 		return null;
 
 	}
-	
+
 	public String calculaRepercussao(String url, String id){
 
 
@@ -245,33 +288,44 @@ public class NoticiasJornalFolhaSP extends Noticia {
 
 		final String tweeterPage = "https://cdn.api.twitter.com/1/urls/count.json?url="+url+"&callback=jQuery11100053468162895262794_1425342668803&_=1425342668804";
 		int tweeter = getCount(tweeterPage, "count");
-
-		final String facebookPage = "https://graph.facebook.com/fql?q=SELECT%20url,%20normalized_url,%20share_count,%20like_count,%20comment_count,%20total_count,commentsbox_count,%20comments_fbid,%20click_count%20FROM%20link_stat%20WHERE%20url=%27"+url+"%27&callback=jQuery11100053468162895262794_1425342668801&_=1425342668802";
+		
+		final String tweeterPage_2 = "http://urls.api.twitter.com/1/urls/count.json?callback=jQuery183004098643323709983_1426095974484&url="+url+"&_=1426095975713";
+		int tweeter_2 = getCount(tweeterPage_2, "count");
+		
+		final String facebookPage = "https://graph.facebook.com/fql?q=SELECT%20total_count%20FROM%20link_stat%20WHERE%20url=%27"+url+"%27&callback=jQuery1110030292543070338573_1425849946150&_=1425849946151";
 		int facebook = getCount(facebookPage, "total_count");
+
+		final String facebookPage_2 = "http://graph.facebook.com/?callback=jQuery183004098643323709983_1426095974483&id="+url+"&_=1426095975709";
+		int facebook_2 = getCount(facebookPage_2, "count");
 		
-		final String linkedInPage = "https://www.linkedin.com/countserv/count/share?format=jsonp&url="+url+"&callback=jQuery11100053468162895262794_1425342668805&_=1425342668806";
+		final String linkedInPage = "https://www.linkedin.com/countserv/count/share?format=jsonp&url="+url+"&callback=jQuery1110030292543070338573_1425849946154&_=1425849946155";
 		int linkedIn = getCount(linkedInPage, "count");
-		
+
 		//final String googleplusPage = "http://economia.estadao.com.br/estadao/sharrre.php?url="+url+"&type=googlePlus";		
 		//int googlePlus = getCount(googleplusPage, "count");
-		
-		int total = comentarios+tweeter+facebook+linkedIn;
-		System.out.println("c:"+comentarios+",t:"+tweeter+",f:"+facebook+",l:"+linkedIn+",total:"+total);
+
+		int total = comentarios+tweeter+tweeter_2+facebook+facebook_2+linkedIn;
+		System.out.println("c:"+comentarios+",t:"+(tweeter+tweeter_2)+",f:"+(facebook+facebook_2)+",l:"+linkedIn+",total:"+total);
 		return "c:"+comentarios+",t:"+tweeter+",f:"+facebook+",l:"+linkedIn+",total:"+total;
 	}
 
 	public int getCount(String url, String atributo){
-		
+
 		Document pagina = obtemPaginaIgnoringType(url);
 		while(pagina == null){
 			pagina = obtemPaginaIgnoringType(url);
 		}
+
 		String json = pagina.select("body").text();
-		
-		if(json.contains("(")){
-			json = json.substring(json.indexOf("(")+1, json.indexOf(")"));
+		if(json.contains("\"error\"")){
+			System.out.println("url:"+url);
+			System.exit(0); 
 		}
-		
+
+		if(json.contains("(")){
+			json = json.substring(json.indexOf("(")+1, json.lastIndexOf(")"));
+		}
+
 		int count  = 0;
 		JSONParser parser = new JSONParser();
 		KeyFinder finder = new KeyFinder();
@@ -291,7 +345,10 @@ public class NoticiasJornalFolhaSP extends Noticia {
 			}           
 		}
 		catch(ParseException pe){
+			System.out.println("url:"+url);
+			System.out.println("json: "+json);
 			pe.printStackTrace();
+			System.exit(0); 	 	
 		}
 		return count;
 	}

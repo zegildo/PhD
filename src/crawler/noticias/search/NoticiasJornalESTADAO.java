@@ -26,7 +26,7 @@ import crawler.noticias.Noticia;
 public class NoticiasJornalESTADAO extends Noticia{
 
 	private static final String URL_ESTADAO = "http://busca.estadao.com.br/?editoria[]=Economia&pagina=";
-	private static int NUM_PAGINA = 1;
+	private static int NUM_PAGINA = 29;
 	private static final String CONSULTA = "&q=";
 
 	private DBCollection mongoCollection = null;
@@ -232,11 +232,14 @@ public class NoticiasJornalESTADAO extends Noticia{
 		System.out.println("\t -"+titulo);
 
 		Document doc = obtemPagina(url);
-		while(doc == null){
+		int tentativas = 0;
+		while((doc == null) && (tentativas < 50)){
 			doc = obtemPagina(url);
+			tentativas++;
 		}
 
 		if(doc.baseUri().isEmpty()){
+			System.out.println("Retornei null...");
 			return null;
 		}
 
@@ -247,6 +250,7 @@ public class NoticiasJornalESTADAO extends Noticia{
 		if(conteudo.isEmpty()){
 			conteudo = doc.select(".texto p").text();
 			if(conteudo.isEmpty()){
+				System.out.println("Retornei null...");
 				return null;
 			}
 		}
@@ -283,6 +287,7 @@ public class NoticiasJornalESTADAO extends Noticia{
 		int googlePlus = getCount(googleplusPage, "count");
 		
 		int total = comentarios+tweeter+facebook+linkedIn+googlePlus;
+		System.out.println("c:"+comentarios+",t:"+tweeter+",f:"+facebook+",l:"+linkedIn+",g:"+googlePlus+",total:"+total);
 		return "c:"+comentarios+",t:"+tweeter+",f:"+facebook+",l:"+linkedIn+",g:"+googlePlus+",total:"+total;
 	}
 
@@ -307,7 +312,6 @@ public class NoticiasJornalESTADAO extends Noticia{
 				parser.parse(json, finder, true);
 				if(finder.isFound()){
 					finder.setFound(false);
-					System.out.println(finder.getValue());
 					count = ((Long)finder.getValue()).intValue();
 					return count;
 				}
