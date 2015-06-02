@@ -4,6 +4,7 @@ encoding//WebContent/css/docs_min.css=UTF-8
 encoding//WebContent/css/novoEstilo.css=UTF-8
 encoding//WebContent/js=UTF-8
 encoding//WebContent/js/OurStocks.js=ISO-8859-1
+encoding//src/crawler/noticias/search/KeyFinder.java=UTF-8
 encoding//src/dao/EmpresaDAO.java=UTF-8
 encoding//src/entities/Empresas.java=UTF-8
 encoding//src/hibernate.cfg.xml=UTF-8

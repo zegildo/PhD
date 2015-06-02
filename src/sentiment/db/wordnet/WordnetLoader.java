@@ -4,23 +4,13 @@ package sentiment.db.wordnet;
 //to download RDF dumps of WordNet 3.0:
 //git clone git://eculture.cs.vu.nl/home/git/wordnet
 
-import com.tinkerpop.blueprints.impls.neo4j.Neo4jGraph;
-import com.tinkerpop.blueprints.oupls.sail.GraphSail;
-
 import org.openrdf.model.Statement;
-import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFHandler;
 import org.openrdf.rio.RDFHandlerException;
-import org.openrdf.rio.RDFParser;
-import org.openrdf.rio.Rio;
-import org.openrdf.sail.Sail;
 import org.openrdf.sail.SailConnection;
 import org.openrdf.sail.SailException;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.util.zip.GZIPInputStream;
+import com.tinkerpop.blueprints.impls.neo4j.Neo4jGraph;
 
 /**
  * @author Joshua Shinavier (http://fortytwo.net)

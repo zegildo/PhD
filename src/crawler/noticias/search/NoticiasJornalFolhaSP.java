@@ -23,7 +23,7 @@ import crawler.noticias.Noticia;
 public class NoticiasJornalFolhaSP extends Noticia {
 
 	private static final String URL_FOLHASP = "http://search.folha.com.br/search?";
-	private static int NUM_PAGINA = 25301;
+	private static int NUM_PAGINA = 104784;
 	private DBCollection mongoCollection = null;
 
 	public NoticiasJornalFolhaSP(){}
@@ -199,17 +199,39 @@ public class NoticiasJornalFolhaSP extends Noticia {
 		}else{
 
 			Document doc = obtemPagina(url);
-			String corpo = doc.select("body").text();
-
-			if(corpo.isEmpty()){
-				url = doc.select("meta[http-equiv=Refresh]").attr("content");
-				url = url.split("=")[1];
-				doc = null;
+			
+			if(doc != null){
+				String corpo = doc.select("body").text();
+				if(corpo.isEmpty()){
+					url = doc.select("meta[http-equiv=Refresh]").attr("content");
+					if(url.isEmpty()){
+						System.out.println("url vazia...");
+						return null;
+					}
+					url = url.split("=")[1];
+					doc = null;
+				}
 			}
-
+			
 			int tentativas = 0;
+			
 			while((doc == null) && (tentativas <= 10)){
+				
 				doc = obtemPagina(url);
+				
+				if(doc != null){
+					String corpo = doc.select("body").text();
+					if(corpo.isEmpty()){
+						url = doc.select("meta[http-equiv=Refresh]").attr("content");
+						if(url.isEmpty()){
+							System.out.println("url vazia...");
+							return null;
+						}
+						url = url.split("=")[1];
+						doc = obtemPagina(url);
+					}
+				}
+				
 				tentativas++;	
 			}
 
@@ -238,7 +260,7 @@ public class NoticiasJornalFolhaSP extends Noticia {
 					timestamp = Utiles.dataToTimestamp(data, hora.replace("h", ""));		
 				}else{
 					System.out.println("Nao houve como capturar o tempo aqui...");
-					return null;
+					return null; 
 				}
 			
 			}
@@ -291,8 +313,18 @@ public class NoticiasJornalFolhaSP extends Noticia {
 		
 		final String tweeterPage_2 = "http://urls.api.twitter.com/1/urls/count.json?callback=jQuery183004098643323709983_1426095974484&url="+url+"&_=1426095975713";
 		int tweeter_2 = getCount(tweeterPage_2, "count");
-		
-		final String facebookPage = "https://graph.facebook.com/fql?q=SELECT%20total_count%20FROM%20link_stat%20WHERE%20url=%27"+url+"%27&callback=jQuery1110030292543070338573_1425849946150&_=1425849946151";
+	    
+		try {
+	    	
+			new Thread().sleep(1000);
+			
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			System.exit(0);
+			e.printStackTrace();
+		}
+	    
+		final String facebookPage = "https://graph.facebook.com/fql?q=SELECT%20total_count%20FROM%20link_stat%20WHERE%20url=%27"+url+"%27&callback=jQuery183079688022619946_1426192200188&_=1426192201535";
 		int facebook = getCount(facebookPage, "total_count");
 
 		final String facebookPage_2 = "http://graph.facebook.com/?callback=jQuery183004098643323709983_1426095974483&id="+url+"&_=1426095975709";
@@ -306,7 +338,7 @@ public class NoticiasJornalFolhaSP extends Noticia {
 
 		int total = comentarios+tweeter+tweeter_2+facebook+facebook_2+linkedIn;
 		System.out.println("c:"+comentarios+",t:"+(tweeter+tweeter_2)+",f:"+(facebook+facebook_2)+",l:"+linkedIn+",total:"+total);
-		return "c:"+comentarios+",t:"+tweeter+",f:"+facebook+",l:"+linkedIn+",total:"+total;
+		return "c:"+comentarios+",t:"+(tweeter+tweeter_2)+",f:"+(facebook+facebook_2)+",l:"+linkedIn+",total:"+total;
 	}
 
 	public int getCount(String url, String atributo){
@@ -318,6 +350,7 @@ public class NoticiasJornalFolhaSP extends Noticia {
 
 		String json = pagina.select("body").text();
 		if(json.contains("\"error\"")){
+			System.out.println("json:"+json);
 			System.out.println("url:"+url);
 			System.exit(0); 
 		}

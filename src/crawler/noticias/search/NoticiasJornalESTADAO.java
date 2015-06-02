@@ -26,7 +26,7 @@ import crawler.noticias.Noticia;
 public class NoticiasJornalESTADAO extends Noticia{
 
 	private static final String URL_ESTADAO = "http://busca.estadao.com.br/?editoria[]=Economia&pagina=";
-	private static int NUM_PAGINA = 29;
+	private static int NUM_PAGINA = 16816;
 	private static final String CONSULTA = "&q=";
 
 	private DBCollection mongoCollection = null;
@@ -277,9 +277,15 @@ public class NoticiasJornalESTADAO extends Noticia{
 
 		final String tweeterPage = "https://cdn.api.twitter.com/1/urls/count.json?url="+url+"&callback=jQuery11100053468162895262794_1425342668803&_=1425342668804";
 		int tweeter = getCount(tweeterPage, "count");
+		
+		final String tweeterPage_2 = "http://urls.api.twitter.com/1/urls/count.json?callback=jQuery183004098643323709983_1426095974484&url="+url+"&_=1426095975713";
+		int tweeter_2 = getCount(tweeterPage_2, "count");
 
 		final String facebookPage = "https://graph.facebook.com/fql?q=SELECT%20url,%20normalized_url,%20share_count,%20like_count,%20comment_count,%20total_count,commentsbox_count,%20comments_fbid,%20click_count%20FROM%20link_stat%20WHERE%20url=%27"+url+"%27&callback=jQuery11100053468162895262794_1425342668801&_=1425342668802";
 		int facebook = getCount(facebookPage, "total_count");
+		
+		final String facebookPage_2 = "http://graph.facebook.com/?callback=jQuery183004098643323709983_1426095974483&id="+url+"&_=1426095975709";
+		int facebook_2 = getCount(facebookPage_2, "count");
 		
 		final String linkedInPage = "https://www.linkedin.com/countserv/count/share?format=jsonp&url="+url+"&callback=jQuery11100053468162895262794_1425342668805&_=1425342668806";
 		int linkedIn = getCount(linkedInPage, "count");
@@ -287,9 +293,9 @@ public class NoticiasJornalESTADAO extends Noticia{
 		final String googleplusPage = "http://economia.estadao.com.br/estadao/sharrre.php?url="+url+"&type=googlePlus";		
 		int googlePlus = getCount(googleplusPage, "count");
 		
-		int total = comentarios+tweeter+facebook+linkedIn+googlePlus;
-		System.out.println("c:"+comentarios+",t:"+tweeter+",f:"+facebook+",l:"+linkedIn+",g:"+googlePlus+",total:"+total);
-		return "c:"+comentarios+",t:"+tweeter+",f:"+facebook+",l:"+linkedIn+",g:"+googlePlus+",total:"+total;
+		int total = comentarios+tweeter+tweeter_2+facebook+facebook_2+linkedIn+googlePlus;
+		System.out.println("c:"+comentarios+",t:"+(tweeter+tweeter_2)+",f:"+(facebook+facebook_2)+",l:"+linkedIn+"g:"+googlePlus+",total:"+total);
+		return "c:"+comentarios+",t:"+(tweeter+tweeter_2)+",f:"+(facebook+facebook_2)+",l:"+linkedIn+"g:"+googlePlus+",total:"+total;
 	}
 
 	public int getCount(String url, String atributo){

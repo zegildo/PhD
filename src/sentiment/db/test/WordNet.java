@@ -1,8 +1,11 @@
 package sentiment.db.test;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
+import rita.RiWordNet;
 import net.didion.jwnl.JWNLException;
 import net.didion.jwnl.data.IndexWord;
 import net.didion.jwnl.data.IndexWordSet;
@@ -10,8 +13,7 @@ import net.didion.jwnl.data.POS;
 import net.didion.jwnl.data.Synset;
 import net.didion.jwnl.data.Word;
 import net.didion.jwnl.dictionary.Dictionary;
-import rita.wordnet.RiWordnet;
-import rita.wordnet.WordnetPos;
+
 
 public class WordNet {
 
@@ -62,6 +64,51 @@ public class WordNet {
 		}		 
 		return null;
 	}
+
+	public static void encontraCaminhosGeral(String noRaiz, Dictionary dic) throws JWNLException{
+
+		HashMap<String, Integer> distancias = new HashMap<String, Integer>();
+		List<String> filaDeNos = new ArrayList<String>();
+		filaDeNos.add(noRaiz);
+		distancias.put(noRaiz, 0);
+
+		while(!filaDeNos.isEmpty()){
+			
+			String noDaVez = filaDeNos.remove(0);
+			int profundidade = distancias.get(noDaVez);
+			
+			Synset sense[] = buscarSentidos(noDaVez, dic);
+			
+			for (Synset sen : sense) {
+				for (Word w : sen.getWords()) {
+					String lema = w.getLemma();
+					if(lema.equals("bazaar")){
+						System.out.println("igual");
+						break;
+					}
+					if(lema.contains("(")){
+						lema = lema.substring(0, lema.indexOf("("));
+					}
+					if((distancias.get(lema)== null)){
+						filaDeNos.add(lema);
+						distancias.put(lema, profundidade+1);
+					}
+				}
+			}
+		}
+		
+		int max = 0;
+		for (String adjetivo: distancias.keySet()) {
+			int valor = distancias.get(adjetivo);
+			 if(valor > max){
+				 max = valor;
+			 }
+			 
+			System.out.println(adjetivo+","+valor);
+		}
+		
+		System.out.println("Maior valor de expansao:"+max);
+	}
 	public static String encontraCaminho(String inicio, String fim, Dictionary dic) throws JWNLException{
 		boolean encontrado = false;
 		Synset sense[] = buscarSentidos(inicio, dic);
@@ -72,30 +119,30 @@ public class WordNet {
 			for (Word w : sen.getWords()) {
 				String lema = w.getLemma();
 				if(lema.equals(fim)){
-					return inicio+"-"+fim;
+					return inicio+"_"+fim;
 				}else if(!inicio.equals(lema)){
-					expansaoAtual.add(inicio+"-"+lema);
+					expansaoAtual.add(inicio+"_"+lema);
 				}
 			}		
 		}	
 
 		while(!encontrado){
 			for (String caminho : expansaoAtual) {
-				String termo = caminho.substring(caminho.lastIndexOf("-")+1, caminho.length());
+				String termo = caminho.substring(caminho.lastIndexOf("_")+1, caminho.length());
 				sense = buscarSentidos(termo, dic);
 				if(sense != null){
 					for (Synset synset : sense) {
 						for (Word w : synset.getWords()) {
 							String lema = w.getLemma();
 							if(lema.equals(fim)){
-								return caminho+"-"+fim;
+								return caminho+"_"+fim;
 							}else if(!caminho.contains(lema)){
-								novaExpansao.add(caminho+"-"+lema);
+								novaExpansao.add(caminho+"_"+lema);
 							}
 						}	
 					}
 				}
-				
+
 			}
 			expansaoAtual.clear();
 			expansaoAtual.addAll(novaExpansao);
@@ -108,45 +155,12 @@ public class WordNet {
 	}
 
 	public static void main(String args[]) throws JWNLException{
-		RiWordnet wordnet = new RiWordnet();
-		Dictionary dic = wordnet.getDictionary();
-//		List<String> s = WordNet.encontraCaminhoProfundidade("good", "bad", "", new ArrayList<String>(), dic, new ArrayList<String>());
-//		for (String string : s) {
-//			System.out.println(string);
-//		}
-		
-		System.out.println(encontraCaminho("good", "bad", dic));
+		RiWordNet wordnet = new RiWordNet("/WordNet3.1");
 
-		//		RelationshipList relList;
-		//
-		//		for (int i = 1; i <= senseCount1; i++)
-		//		{
-		//			
-		//			for (int j = 1; j <= senseCount2; j++)
-		//			{
-		//
-		//				try
-		//				{
-		//					System.out.println(start.getSense(i)+"-"+end.getSense(j));
-		//
-		//					relList = RelationshipFinder.getInstance().findRelationships(
-		//							start.getSense(i), end.getSense(j), PointerType.MEMBER_MERONYM);
-		//				}
-		//				catch (Exception e)
-		//				{
-		//					continue;
-		//				}
-		//
-		//				for (Iterator relListItr = relList.iterator(); relListItr.hasNext(); )
-		//				{
-		//					Relationship rel = (Relationship)relListItr.next();
-		//					int relLength = rel.getDepth();
-		//					if(relLength< menorDistancia){
-		//						menorDistancia = relLength;
-		//					}
-		//
-		//				}
-		//			}
-		//		}
+		Dictionary dic = wordnet.getDictionary();
+
+		//System.out.println(encontraCaminho("good", "bad", dic));
+		encontraCaminhosGeral("good", dic);
+
 	}
 }
