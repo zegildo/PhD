@@ -144,7 +144,7 @@ public class NoticiasJornalESTADAO extends Noticia{
 
 	}
 
-	private long timestampDoDia(String data){
+	public long timestampDoDia(String data){
 
 		String timesTamp = padronizaFormatoDDMMYYYY(data);
 		return Utiles.dataToTimestamp(timesTamp,"0000");
@@ -334,10 +334,13 @@ public class NoticiasJornalESTADAO extends Noticia{
 
 	public static void main(String args[]) throws IOException{
 
-		String searchDateStart= "01/01/2000";
+		/*String searchDateStart= "01/01/2000";
 		String searchDateFinish="01/03/2015";
 		NoticiasJornalESTADAO n = new NoticiasJornalESTADAO();
-		n.insereInformacao(searchDateStart, searchDateFinish, "economia");
+		n.insereInformacao(searchDateStart, searchDateFinish, "economia");*/
+		
+		NoticiasJornalESTADAO e = new NoticiasJornalESTADAO();
+		System.out.println(e.timestampDoDia("09 de junho de 2015"));
 
 	}
 

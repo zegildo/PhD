@@ -65,5 +65,10 @@ public class Utiles {
 		Date date = new Date(stamp.getTime()); 
 		return date.toGMTString();
 	}
+	
+	public static void main(String args[]){
+		System.out.println(dataToTimestamp("19/04/2007","0324"));
+		
+	}
 
 }
