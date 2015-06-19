@@ -1,18 +1,17 @@
-from itertools import islice
 from pymongo import MongoClient
-from pymongo import ReturnDocument
-from bson.objectid import ObjectId
 import sys
 
 client = MongoClient()
 db = client.stocks
 collection = db.informacoesGerais
 
-with open('urlsESTADAO-out-all.txt','r') as f:
-	while True:
-		group = list(islice(f,2))
-		if not group:
-			break
-		url = group[0].rstrip()
-		timestamp = group[1].rstrip()
-		collection.find_one_and_update({'url':url},{'$set':{'timestamp':timestamp}})
+pares = sys.argv[1:]
+
+for par in pares:
+	par = par.split(" ")
+	url = par[0]
+	timestamp = par[1]	
+	if timestamp == '0':
+		print url
+	#print collection.find_one({'url':url}, projection={'_id':True}),timestamp
+	#print collection.find_one_and_update({'url':url},{'$set':{'timestamp':timestamp}}, projection={'_id':True})

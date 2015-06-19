@@ -245,15 +245,18 @@ if __name__ == "__main__":
 		subTitulo = getStringSemEspacamento(body.xpath('//hgroup/span[@class="news-subtitle"]/text()')[0])
 		
 		if titulo:
-			
-			emissor = getStringSemEspacamento(body.xpath('//address/text()')[0])
-			timestamp = getTimestampUnix(body.xpath('//time/text()')[0].encode('utf-8'))
-			conteudo = getContent(body.xpath('//article/div[@id="contentNews"]/text() | //article/div[@id="contentNews"]/strong/a/text()'))
-			fonte = 'JornalEspecifico'
-			subFonte = 'INFOMONEY'  
-			url = URL 
-			repercussao = verificaRepercussao(URL)
-			
+			try:
+				emissor = getStringSemEspacamento(body.xpath('//address/text()')[0])
+				timestamp = getTimestampUnix(body.xpath('//time/text()')[0].encode('utf-8'))
+				conteudo = getContent(body.xpath('//article/div[@id="contentNews"]/text() | //article/div[@id="contentNews"]/strong/a/text()'))
+				fonte = 'JornalEspecifico'
+				subFonte = 'INFOMONEY'  
+				url = URL 
+				repercussao = verificaRepercussao(URL)
+			except:
+				print URL,' - ERROR!'
+				# se uma thread nao encontrar sucesso, a proxima pode encontrar entao utilizamos o continue e nao o break
+				continue
 			noticia = {"timestamp" : timestamp, "subFonte" : subFonte, "titulo" : titulo, 
 			"subTitulo" : subTitulo, "conteudo" : conteudo, "emissor" : emissor, "url" : url, "repercussao" : repercussao}
 
