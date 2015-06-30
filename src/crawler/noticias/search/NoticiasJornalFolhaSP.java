@@ -23,7 +23,7 @@ import crawler.noticias.Noticia;
 public class NoticiasJornalFolhaSP extends Noticia {
 
 	private static final String URL_FOLHASP = "http://search.folha.com.br/search?";
-	private static int NUM_PAGINA = 104784;
+	private static int NUM_PAGINA = 1;
 	private DBCollection mongoCollection = null;
 
 	public NoticiasJornalFolhaSP(){}
@@ -388,8 +388,8 @@ public class NoticiasJornalFolhaSP extends Noticia {
 
 	public static void main(String args[]) throws IOException{
 
-		String searchDateStart= "01/01/2000";
-		String searchDateFinish="01/03/2015";
+		String searchDateStart= "01/01/2001";
+		String searchDateFinish="31/12/2001";
 		NoticiasJornalFolhaSP n = new NoticiasJornalFolhaSP();
 		/*
 		 * Na Folha de São Paulo o nome do cardeno é MERCADO ao invés de ECONOMIA
