@@ -1,7 +1,3 @@
-/*
-Comentarios:
-Noticias que geraram mais de 100 comentarios para o ESTADAO
-*/
 
 function eliminaResquicios(palavras){
 
@@ -34,11 +30,10 @@ function contaPalavras(texto, map){
 	
 	
 /*
-Datas importantes para análise de comentarios
-
+Datas em que o número de comentários no dia foi maior que 100
 */
-var mapaDeDatas = ["10-12-2015"];
-
+var mapaDeDatas = ["9-20-2010","11-12-2010","11-21-2010","1-3-2011","2-8-2011",
+"12-25-2011","5-5-2012","8-29-2014","27-2-2015"];
 
 var palavras_titulo = {};
 var palavras_conteudo = {};
@@ -55,44 +50,22 @@ db.informacoesGerais.find({}).forEach(
 
 		if("ESTADAO" == jornal){
 
-		var date = new Date(doc.timestamp * 1000);        
-		var dateKey = (date.getMonth()+1)+"-"+date.getDate()+"-"+date.getFullYear();
+			var date = new Date(doc.timestamp * 1000);        
+			var dateKey = (date.getMonth()+1)+"-"+date.getDate()+"-"+date.getFullYear();
 
-			if(mapaDeDatas.indexOf(dataKey) > -1){
-			
-				repercussoes = doc.repercussao.split(",");
+			if(mapaDeDatas.indexOf(dateKey) > -1){
 				
-				for (var rep in repercussoes){
-
-					siglaValor = repercussoes[rep].split(":");
-					sigla = siglaValor[0];
-					valor = siglaValor[1];
-					
-					if (sigla == comentario && valor == OUTLIER){
-						
-						print("url: "+doc.url);
-						titulo = doc.titulo;
-						contaPalavras(titulo,palavras_titulo);
-						
-						conteudo = doc.conteudo;
-						contaPalavras(titulo,palavras_conteudo);
-						break;
-
-					}
-				}
-
-			}else{
-				print("Deu errado aqui: "+dateKey);
+				titulo = doc.titulo;
+				contaPalavras(titulo,palavras_titulo);
+				
+				conteudo = doc.conteudo;
+				contaPalavras(titulo,palavras_conteudo);
 			}
-
 		}
-		
-		
+	
 	}
 
 );
-
-print("Quantidades: "+quantidadeOutliers);
 
 print("*********TITULO***********")
 for (var a in palavras_titulo){
