@@ -1,23 +1,8 @@
-de	341
-em	224
-do	142
-e	123
-para	111
-da	95
-no	83
-r$	77
-a	74
-com	73
 diz	60
 dólar	53
 bovespa	53
-na	52
-que	46
-por	39
 brasil	39
 alta	37
-dos	36
-é	35
 fecha	35
 bolsas	31
 mais	31
@@ -36,7 +21,6 @@ sobe	22
 petrobras	21
 bi	21
 compra	20
-o	20
 eua	19
 pode	19
 sobre	19
@@ -51,7 +35,6 @@ us$	16
 à	16
 nova	15
 até	15
-se	15
 bndes	15
 aprova	14
 empresas	14
@@ -1638,8 +1621,3 @@ categorias	1
 fortes	1
 proporcional	1
 quarto	1
-opinião	
-erramos	
-dolci	
-dinheiro	
-análise	
