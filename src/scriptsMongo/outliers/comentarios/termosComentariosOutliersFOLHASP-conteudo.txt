@@ -20,7 +20,6 @@ sobe	22
 petrobras	21
 bi	21
 compra	20
-o	20
 eua	19
 pode	19
 sobre	19
@@ -32,7 +31,6 @@ vale	17
 bolsa	17
 país	16
 us$	16
-à	16
 nova	15
 até	15
 se	15
