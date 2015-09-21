@@ -1,24 +1,10 @@
-de	102
-em	45
-da	39
-e	29
-a	29
-do	24
+a,b
 diz	21
-no	18
-para	18
 petrobras	15
-com	15
-o	12
-na	11
 maior	10
-é	10
-que	10
 energia	10
 brasil	9
 mais	9
-por	9
-2014	8
 deve	7
 tem	7
 ano	7

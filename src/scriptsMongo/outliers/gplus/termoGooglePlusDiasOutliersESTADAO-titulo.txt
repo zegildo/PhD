@@ -1,25 +1,13 @@
-de	84
-da	45
-em	41
-e	33
-do	31
-para	28
+a,b
 estado	25
 agência	21
-a	21
-no	19
 alta	16
 com	14
 economia	13
-na	13
-o	12
 diz	11
 mais	9
 inflação	9
-dos	9
-1º	8
 tem	8
-silva	8
 caixa	7
 abril	7
 dólar	7

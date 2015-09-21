@@ -1,15 +1,4 @@
-de	814
-em	469
-da	303
-do	294
-no	248
-e	244
-para	190
-a	169
-diz	161
-na	152
-com	137
-r$	116
+a,b
 lucro	88
 alta	87
 por	84
@@ -27,7 +16,6 @@ inflação	56
 fecha	52
 abril	52
 milhões	51
-	48
 não	48
 sobre	47
 us$	47
@@ -36,8 +24,6 @@ das	44
 nos	44
 queda	44
 governo	43
-o	42
-à	42
 março	42
 china	40
 após	40
@@ -93,7 +79,6 @@ vai	19
 juros	19
 etanol	19
 commodities	19
-201200,00%	18
 indústria	18
 pontos	18
 volta	18
@@ -3264,28 +3249,3 @@ indicado	1
 aporte	1
 equipe	1
 buscará	1
-gradual'	1
-13º	1
-domésticos	1
-márcio	1
-zimmermann	1
-chinês	
-inflação	
-esperada'	
-	
-fgv	
-bc	
-focus	
-etanol	
-trigo	
-	
-morales	
-sebrae-sp	
-sindicom	
-abac	
-conab	
-safra	
-	
-	
-onu	
-receita	
