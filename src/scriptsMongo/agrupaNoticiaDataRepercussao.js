@@ -5,7 +5,7 @@ function generenateDatesBetween(startDate, stopDate){
     var currentDate = new Date(startDate);
     stopDate = new Date(stopDate);
     while (currentDate <= stopDate) {
-    	var dataFormatada = currentDate.getDay()+"-"+(currentDate.getMonth()+1)+"-"+currentDate.getDate()+"-"+currentDate.getFullYear();
+    	var dataFormatada = (currentDate.getMonth()+1)+"-"+currentDate.getDate()+"-"+currentDate.getFullYear();
         dateMap[dataFormatada]={"G1":{"qt":0,"c":0,"t":0,"f":0,"l":0,"g":0,"total":0},
         						"FOLHASP":{"qt":0,"c":0,"t":0,"f":0,"l":0,"g":0,"total":0},
         						"ESTADAO":{"qt":0,"c":0,"t":0,"f":0,"l":0,"g":0,"total":0}
@@ -25,7 +25,7 @@ db.informacoesGerais.find({}).forEach(
 		if(["ESTADAO","FOLHASP","G1"].indexOf(doc.subFonte) > -1){
 			
 			var date = new Date(doc.timestamp * 1000);        
-			var dateKey = date.getDay()+"-"+(date.getMonth()+1)+"-"+date.getDate()+"-"+date.getFullYear();
+			var dateKey = (date.getMonth()+1)+"-"+date.getDate()+"-"+date.getFullYear();
 			
 			if(dateKey in mapaDeDatas){
 				mapaDeDatas[dateKey][doc.subFonte]["qt"]++;
@@ -47,26 +47,22 @@ db.informacoesGerais.find({}).forEach(
 
 );
 
-var DIAS_DA_SEMANA = new Array("Sun", "Mon",
-      "Tue", "Wed", "Thu",
-      "Fri", "Sat");
-
-var MES = new Array("JAN", "FEV",
-      "MAR", "ABR", "MAI",
-      "JUN", "JUL", "AGO", 
-      "SET", "OUT", "NOV", "DEZ");
-
 var jornais = ["G1", "FOLHASP", "ESTADAO"];
 
-print("Dia da Semana, Mes, Dia, Ano, Jornal, Quantidade, Comentarios, Tweets, Facebook, LinkedIn, GooglePlus, TotalRepercussao");
+print("Data,Jornal,Quantidade,Comentarios,Tweets,Facebook,LinkedIn,GooglePlus,TotalRepercussao");
 
 for (var data in mapaDeDatas){
-	
+
 	dataSplit = data.split("-");
-	diaDaSemana = DIAS_DA_SEMANA[dataSplit[0]];
-	mes = MES[dataSplit[1]-1];
-	dia = dataSplit[2];
-	ano = dataSplit[3];
+	mes = dataSplit[0];
+	if(mes.length < 2){
+		mes = "0"+mes
+	}
+	dia = dataSplit[1];
+	if(dia.length < 2){
+		dia = "0"+dia
+	}
+	ano = dataSplit[2];
 
 	for (var jornal in jornais){
 		
@@ -78,7 +74,7 @@ for (var data in mapaDeDatas){
 		googleplus = mapaDeDatas[data][jornais[jornal]]["g"];
 		total = mapaDeDatas[data][jornais[jornal]]["total"];
 		
-		print(diaDaSemana+","+mes+","+dia+","+ano+","+jornais[jornal]+","+qt+","+comentarios+","+tweets+","+facebook+","+linkedIn+","+googleplus+","+total);
+		print(dia+"/"+mes+"/"+ano+","+jornais[jornal]+","+qt+","+comentarios+","+tweets+","+facebook+","+linkedIn+","+googleplus+","+total);
 	
 	}
 }
