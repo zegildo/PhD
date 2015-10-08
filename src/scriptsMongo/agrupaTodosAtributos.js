@@ -82,7 +82,7 @@ for (var data in mapaDeDatas){
 	if(mes.length < 2){
 		mes = "0"+mes
 	}
-	diaData = dataSplit[1];
+	diaData = dataSplit[2];
 	if(diaData.length < 2){
 		diaData = "0"+dia
 	}
