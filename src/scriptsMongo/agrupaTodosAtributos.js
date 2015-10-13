@@ -74,8 +74,8 @@ print("Data,DiadaSemana,Mes,Dia,Ano,Jornal,qtNoticias,qtComentarios,qtTweets,qtF
 for (var data in mapaDeDatas){
 	
 	dataSplit = data.split("-");
-	diaDaSemana = DIAS_DA_SEMANA[dataSplit[0]];
-	mesExtenso = MES[dataSplit[1]-1];
+	diaDaSemana = dataSplit[0];
+	mesNumerico = dataSplit[1]-1;
 	mes = dataSplit[1];
 	dia = dataSplit[2];
 	ano = dataSplit[3];
@@ -99,7 +99,7 @@ for (var data in mapaDeDatas){
 		neg = mapaDeDatas[data][jornais[jornal]]["neg"];
 		neu = mapaDeDatas[data][jornais[jornal]]["neu"];
 		
-		print(diaData+"/"+mes+"/"+ano+","+diaDaSemana+","+mesExtenso+","+dia+","+ano+","+jornais[jornal]+","+qt+","+comentarios+","+tweets+","+facebook+","+linkedIn+","+googleplus+","+total+","+pos+","+neg+","+neu);
+		print(diaData+"/"+mes+"/"+ano+","+diaDaSemana+","+mesNumerico+","+dia+","+ano+","+jornal+","+qt+","+comentarios+","+tweets+","+facebook+","+linkedIn+","+googleplus+","+total+","+pos+","+neg+","+neu);
 	
 	}
 }
