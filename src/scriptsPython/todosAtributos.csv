@@ -1,4 +1,4 @@
-data,DiadaSemana,Mes,Dia,Ano,Jornal,qtNoticias,qtComentarios,qtTweets,qtFacebook,qtLinkedIn,qtGooglePlus,qtTotalEngajamento,qtPos,qtNeg,qtNeu
+Data,DiadaSemana,Mes,Dia,Ano,Jornal,qtNoticias,qtComentarios,qtTweets,qtFacebook,qtLinkedIn,qtGooglePlus,qtTotalEngajamento,qtPos,qtNeg,qtNeu
 01/01/2000,Sat,JAN,1,2000,G1,0,0,0,0,0,0,0,0,0,0
 01/01/2000,Sat,JAN,1,2000,FOLHASP,0,0,0,0,0,0,0,0,0,0
 01/01/2000,Sat,JAN,1,2000,ESTADAO,0,0,0,0,0,0,0,0,0,0
