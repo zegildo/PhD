@@ -1,6 +1,7 @@
 
 print("Data,DiadaSemana,Mes,Dia,Ano,Jornal,qtComentarios,qtTweets,qtFacebook,qtLinkedIn,qtGooglePlus,polaridade");
 
+
 db.informacoesGerais.find({}).forEach(
 
 	function (doc){
@@ -13,17 +14,10 @@ db.informacoesGerais.find({}).forEach(
 			var date = new Date(doc.timestamp * 1000);        
 			var diaSemana = (date.getDay()+1);
 			var mes = (date.getMonth()+1)+"";
-			var mesData = mes
-			if(mes.length < 2){
-				mesData =  "0"+mes;
-			}
-			var dia = date.getDate()+"";
-			var diaData = dia
-			if(dia.length < 2){
-				diaData = "0"+dia;
-			}			
+			var dia = date.getDate()+"";	
 			var ano = date.getFullYear();
-			var data = diaData+"/"+mesData+"/"+ano;
+			var data = ((dia.length<2) ? "0"+dia : dia)+"/"+((mes.length<2) ? "0"+mes : mes)+"/"+ano;
+			
 			result += data+","+diaSemana+","+dia+","+mes+","+ano+","+subFonte+",";
 			var repercussoes = doc.repercussao.split(",");
 			var engajamento = {"c":0,"t":0,"f":0,"l":0,"g":0};
