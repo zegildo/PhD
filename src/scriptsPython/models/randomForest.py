@@ -11,7 +11,7 @@ def main():
     for i in xrange(25,1025,25):
         print "%s ARVORES:" % i
         noCrossValidation(train,target,i)
-        crossValidation(train,target,i)kk0 
+        crossValidation(train,target,i) 
 
 def noCrossValidation(train,target,numeroArvores):
     X_train, X_test, Y_train, Y_test = cross_validation.train_test_split(train, target, test_size=0.25,random_state=0)

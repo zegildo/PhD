@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 
-ibovespa = pd.read_csv('/home/zegildo/workspace/PhD/src/scriptsPython/correlacao/indices/IndiceIbovespa.csv') 
+ibovespa = pd.read_csv('/home/zegildo/workspace/PhD/src/scriptsPython/indices/IndiceIbovespa.csv') 
 variacoes = [float(x.replace(",",".")) for x in ibovespa.variacao.values]
 
 print "Max:", np.amax(variacoes)
@@ -10,20 +10,24 @@ print "Media:",np.mean(variacoes)
 print "Mediana:", np.median(variacoes)
 print "Desvio Padrao:",np.std(variacoes)
 
+total=irr=alt=bax = 0.0
+
 classes = []
 for c in variacoes:
-	if c < -1.99:
-		classes.append("Pessimo")
-	elif (c<=-1 and c>=-1.99):
-		classes.append("Ruim")
-	elif (c<=-0.01 and c>=-0.99):
-		classes.append("Levemente Ruim")
-	elif (c>=0.0 and c<=0.99):
-		classes.append("Levemente Bom")
-	elif (c>=1 and c<=1.99):
-		classes.append("Bom")
-	elif (c>1.99):
-		classes.append("Otimo")
+	total+=1
+	if c <= 0.5 and c >= -0.5 :
+		classes.append("Irrelevante")
+		irr+=1
+	elif (c > 0.5):
+		classes.append("Alta")
+		alt+=1
+	else:
+		classes.append("Baixa")
+		bax+=1
+
+print "bax: ",bax/total
+print "alt: ",alt/total
+print "irr: ",irr/total
 
 ibovespa['classes'] = classes
 #copia as informacoes do dataframe ibovespa sem o index_label
