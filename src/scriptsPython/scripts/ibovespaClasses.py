@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 
-ibovespa = pd.read_csv('/home/zegildo/workspace/PhD/src/scriptsPython/indices/IndiceIbovespa.csv') 
+ibovespa = pd.read_csv('/Users/zegildo/Documents/workspace/PhD/src/scriptsPython/indices/IndiceIbovespa.csv') 
 variacoes = [float(x.replace(",",".")) for x in ibovespa.variacao.values]
 
 print "Max:", np.amax(variacoes)
@@ -16,13 +16,13 @@ classes = []
 for c in variacoes:
 	total+=1
 	if c <= 0.5 and c >= -0.5 :
-		classes.append("Irrelevante")
+		classes.append("0")
 		irr+=1
 	elif (c > 0.5):
-		classes.append("Alta")
+		classes.append("1")
 		alt+=1
 	else:
-		classes.append("Baixa")
+		classes.append("-1")
 		bax+=1
 
 print "bax: ",bax/total
