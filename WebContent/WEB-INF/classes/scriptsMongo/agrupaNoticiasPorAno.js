@@ -31,8 +31,10 @@ db.informacoesGerais.find({}).forEach(
 
 );
 
-print("data,G1,FOLHASP,ESTADAO");
+print("ano,jornal,quantidade");
 for (var data in mapaDeDatas){
-	print(data+","+mapaDeDatas[data]["G1"]+","+mapaDeDatas[data]["FOLHASP"]+","+mapaDeDatas[data]["ESTADAO"]);
 
+	print(data+",G1,"+mapaDeDatas[data]["G1"]);
+	print(data+",FOLHASP,"+mapaDeDatas[data]["FOLHASP"])
+	print(data+",ESTADAO,"+mapaDeDatas[data]["ESTADAO"]);
 }

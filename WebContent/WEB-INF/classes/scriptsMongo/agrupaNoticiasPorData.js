@@ -5,7 +5,7 @@ function generenateDatesBetween(startDate, stopDate){
     var currentDate = new Date(startDate);
     stopDate = new Date(stopDate);
     while (currentDate <= stopDate) {
-    	var dataFormatada = (currentDate.getMonth()+1)+"-"+currentDate.getDate()+"-"+currentDate.getFullYear();
+    	var dataFormatada = currentDate.getDay()+"-"+(currentDate.getMonth()+1)+"-"+currentDate.getDate()+"-"+currentDate.getFullYear();
         dateMap[dataFormatada]={"G1":0,"FOLHASP":0,"ESTADAO":0};
         currentDate.setDate(currentDate.getDate() + GAP_DAYS); // Adiciona 1 dias;
     }
@@ -22,7 +22,7 @@ db.informacoesGerais.find({}).forEach(
 		if(["ESTADAO","FOLHASP","G1"].indexOf(doc.subFonte) > -1){
 			
 			var date = new Date(doc.timestamp * 1000);        
-			var dateKey = (date.getMonth()+1)+"-"+date.getDate()+"-"+date.getFullYear();
+			var dateKey = date.getDay()+"-"+(date.getMonth()+1)+"-"+date.getDate()+"-"+date.getFullYear();
 			
 			if(dateKey in mapaDeDatas){
 				mapaDeDatas[dateKey][doc.subFonte]++;
@@ -34,8 +34,26 @@ db.informacoesGerais.find({}).forEach(
 
 );
 
-print("data,G1,FOLHASP,ESTADAO");
+var DIAS_DA_SEMANA = new Array("Sun", "Mon",
+      "Tue", "Wed", "Thu",
+      "Fri", "Sat");
+
+var MES = new Array("JAN", "FEV",
+      "MAR", "ABR", "MAI",
+      "JUN", "JUL", "AGO", 
+      "SET", "OUT", "NOV", "DEZ");
+
+print("Dia da Semana, Mes, Dia, Ano, Jornal, Quantidade");
 for (var data in mapaDeDatas){
-	print(data+","+mapaDeDatas[data]["G1"]+","+mapaDeDatas[data]["FOLHASP"]+","+mapaDeDatas[data]["ESTADAO"]);
+	dataSplit = data.split("-");
+
+	diaDaSemana = DIAS_DA_SEMANA[dataSplit[0]];
+	mes = MES[dataSplit[1]-1];
+	dia = dataSplit[2];
+	ano = dataSplit[3];
+
+	print(diaDaSemana+","+mes+","+dia+","+ano+","+"G1,"+mapaDeDatas[data]["G1"]);
+	print(diaDaSemana+","+mes+","+dia+","+ano+","+"FOLHASP,"+mapaDeDatas[data]["FOLHASP"]);
+	print(diaDaSemana+","+mes+","+dia+","+ano+","+"ESTADAO,"+mapaDeDatas[data]["ESTADAO"]);
 
 }
